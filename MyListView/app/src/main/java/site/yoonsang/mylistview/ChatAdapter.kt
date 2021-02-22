@@ -27,13 +27,12 @@ data class Chat(
 
 class ChatAdapter(
     context: Context,
-//    private val chatList: ArrayList<Chat>
+    private val chatList: ArrayList<Chat>
 ) : RecyclerView.Adapter<ChatAdapter.ViewHolder>(), Filterable {
 
     private val inflater =
         context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
     lateinit var binding: ItemChatBinding
-    val chatList = arrayListOf<Chat>()
     var chatSearchList: ArrayList<Chat> = chatList.clone() as ArrayList<Chat>
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -59,17 +58,7 @@ class ChatAdapter(
         val sdf = SimpleDateFormat(" · M월 d일", Locale.KOREA).format(time)
         holder.chatUploadDate.text = sdf
 
-//        holder.itemView.setOnClickListener {
-//            Log.d("checkkk", "click")
-//            val intent = Intent(it.context as Activity, MessengerActivity::class.java)
-//            intent.putExtra("image", chatSearchList[position].profileImage)
-//            intent.putExtra("name", chatSearchList[position].name)
-//            intent.putExtra("id", chatSearchList[position].id)
-//            holder.itemView.context.startActivity(intent)
-//        }
-
         holder.chatMainLayout.setOnClickListener {
-            Log.d("checkkk", "cc click")
             val intent = Intent(it.context as Activity, MessengerActivity::class.java)
             intent.putExtra("image", chatSearchList[position].profileImage)
             intent.putExtra("name", chatSearchList[position].name)

@@ -32,7 +32,6 @@ class MessengerActivity : AppCompatActivity() {
         currentTime = MyApplication.prefs.getLong("${id}time")
 
         val helper = DBHelper(this, "$id", DB_VERSION)
-        val chatHelper = DBChatHelper(this, "chatList", DB_VERSION)
         val myMessage = helper.selectMyChat()
         val adapter = MyMessageAdapter(this)
         binding.messengerMyChatRecyclerView.adapter = adapter
@@ -45,8 +44,6 @@ class MessengerActivity : AppCompatActivity() {
                 helper.insertMyChat(Message(message))
                 lastMessage = message
                 currentTime = System.currentTimeMillis()
-                val chat = Chat(id, binding.messengerOppositeName.text.toString(), lastMessage, currentTime, intent.getIntExtra("image", 0))
-                chatHelper.updateChatList(chat)
                 binding.messengerMyChatEditText.setText("")
                 adapter.messageList.add(Message(message))
                 adapter.notifyDataSetChanged()

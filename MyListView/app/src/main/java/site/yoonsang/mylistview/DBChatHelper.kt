@@ -5,13 +5,6 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
-//data class Chat(
-//    val id: Int,
-//    val name: String,
-//    val uploadDate: Long,
-//    val profileImage: Int
-//)
-
 const val TABLE_NAME = "ChatList"
 const val COL_ID = "id"
 const val COL_NAME = "name"

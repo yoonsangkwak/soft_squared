@@ -22,8 +22,7 @@ class ChatSearchFragment : Fragment() {
     ): View {
         _binding = FragmentChatSearchBinding.inflate(layoutInflater, container, false)
 
-//        val chatList = arrayListOf<Chat>()
-        val chatList = ChatAdapter(context!!).chatList
+        val chatList = arrayListOf<Chat>()
         for (i in 0 until 8 step 4) {
             chatList.add(Chat(i, "둘리$i", "", MyApplication.prefs.getLong("${i}time"), R.drawable.doollee))
             chatList.add(Chat(i+1, "도우너${i+1}", "", MyApplication.prefs.getLong("${i+1}time"), R.drawable.douner))
@@ -31,8 +30,7 @@ class ChatSearchFragment : Fragment() {
             chatList.add(Chat(i+3, "고길동${i+3}", "", MyApplication.prefs.getLong("${i+3}time"), R.drawable.gogildong))
         }
         chatList.sortByDescending { it.uploadDate }
-//        val chatAdapter = ChatAdapter(context!!, chatList)
-        val chatAdapter = ChatAdapter(context!!)
+        val chatAdapter = ChatAdapter(context!!, chatList)
 
         binding.chatEdittext.requestFocus()
 
