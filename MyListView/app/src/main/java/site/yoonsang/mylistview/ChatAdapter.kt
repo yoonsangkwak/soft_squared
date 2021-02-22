@@ -18,10 +18,9 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 data class Chat(
-    val id: Int,
     val name: String,
     val message: String = "",
-    val uploadDate: Long,
+    val uploadDate: Long = System.currentTimeMillis(),
     val profileImage: Int
 )
 
@@ -50,19 +49,25 @@ class ChatAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.chatUserProfileImage.setImageResource(chatSearchList[position].profileImage)
-        holder.chatUserName.text = chatSearchList[position].name
-        holder.chatLastMessage.text = MyApplication.prefs.getString("${chatSearchList[position].id}lastMessage")
+        val chatHelper = DBChatHelper(holder.itemView.context, DB_CHAT, DB_VERSION)
+        val chat = chatHelper.searchChat(chatSearchList[position].name)
 
-        val time = MyApplication.prefs.getLong("${chatSearchList[position].id}time")
+        holder.chatUserProfileImage.setImageResource(chat.profileImage)
+        holder.chatUserName.text = chat.name
+        holder.chatLastMessage.text = chat.message
+        val time = chat.uploadDate
         val sdf = SimpleDateFormat(" · M월 d일", Locale.KOREA).format(time)
         holder.chatUploadDate.text = sdf
 
+//        holder.chatLastMessage.text = MyApplication.prefs.getString("${chatSearchList[position].id}lastMessage")
+//        val time = MyApplication.prefs.getLong("${chatSearchList[position].id}time")
+//        val sdf = SimpleDateFormat(" · M월 d일", Locale.KOREA).format(time)
+//        holder.chatUploadDate.text = sdf
+
         holder.chatMainLayout.setOnClickListener {
-            val intent = Intent(it.context as Activity, MessengerActivity::class.java)
-            intent.putExtra("image", chatSearchList[position].profileImage)
-            intent.putExtra("name", chatSearchList[position].name)
-            intent.putExtra("id", chatSearchList[position].id)
+            val intent = Intent(it.context, MessengerActivity::class.java)
+            intent.putExtra("image", chat.profileImage)
+            intent.putExtra("name", chat.name)
             holder.itemView.context.startActivity(intent)
         }
 

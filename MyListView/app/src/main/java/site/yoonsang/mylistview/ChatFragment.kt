@@ -40,25 +40,19 @@ class ChatFragment : Fragment() {
                 .commit()
         }
 
-        return binding.root
-    }
-
-    override fun onResume() {
-        val chatList = arrayListOf<Chat>()
-        for (i in 0 until 8 step 4) {
-            chatList.add(Chat(i, "둘리$i", "", MyApplication.prefs.getLong("${i}time"), R.drawable.doollee))
-            chatList.add(Chat(i+1, "도우너${i+1}", "", MyApplication.prefs.getLong("${i+1}time"), R.drawable.douner))
-            chatList.add(Chat(i+2, "마이콜${i+2}", "", MyApplication.prefs.getLong("${i+2}time"), R.drawable.michol))
-            chatList.add(Chat(i+3, "고길동${i+3}", "", MyApplication.prefs.getLong("${i+3}time"), R.drawable.gogildong))
+        binding.chatAdd.setOnClickListener {
+            val intent = Intent(context, AddActivity::class.java)
+            startActivity(intent)
         }
-        chatList.sortByDescending { it.uploadDate }
+
+        val chatHelper = DBChatHelper(context!!, DB_CHAT, DB_VERSION)
+
         binding.chatRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = ChatAdapter(context, chatList)
-            isNestedScrollingEnabled = false
+            adapter = ChatAdapter(context!!, chatHelper.selectChatList())
         }
-        binding.chatRecyclerView.adapter?.notifyDataSetChanged()
-        super.onResume()
+
+        return binding.root
     }
 
     override fun onDestroyView() {

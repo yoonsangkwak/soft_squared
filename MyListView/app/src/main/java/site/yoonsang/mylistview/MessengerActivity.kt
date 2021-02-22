@@ -23,13 +23,8 @@ class MessengerActivity : AppCompatActivity() {
 
         binding.messengerTopOppositeImage.setImageResource(intent.getIntExtra("image", 0))
         binding.messengerOppositeImage.setImageResource(intent.getIntExtra("image", 0))
-        binding.messengerOppositeChatImage.setImageResource(intent.getIntExtra("image", 0))
         binding.messengerTopOppositeName.text = intent.getStringExtra("name")
         binding.messengerOppositeName.text = intent.getStringExtra("name")
-
-        id = intent.getIntExtra("id", 0)
-        lastMessage = MyApplication.prefs.getString("${id}lastMessage")
-        currentTime = MyApplication.prefs.getLong("${id}time")
 
         val helper = DBHelper(this, "$id", DB_VERSION)
         val myMessage = helper.selectMyChat()
@@ -38,12 +33,16 @@ class MessengerActivity : AppCompatActivity() {
         binding.messengerMyChatRecyclerView.layoutManager = LinearLayoutManager(this)
         adapter.messageList.addAll(myMessage)
 
+        val chatHelper = DBChatHelper(this, DB_CHAT, DB_VERSION)
+
         binding.likeOrSend.setOnClickListener {
             val message = binding.messengerMyChatEditText.text.trim().toString()
             if (message.isNotEmpty()) {
                 helper.insertMyChat(Message(message))
                 lastMessage = message
                 currentTime = System.currentTimeMillis()
+                val chat = chatHelper.searchChat(binding.messengerOppositeName.text.toString())
+                chatHelper.updateChatList(Chat(chat.name, lastMessage, currentTime, chat.profileImage))
                 binding.messengerMyChatEditText.setText("")
                 adapter.messageList.add(Message(message))
                 adapter.notifyDataSetChanged()
@@ -60,15 +59,11 @@ class MessengerActivity : AppCompatActivity() {
         }
 
         binding.messengerArrowBack.setOnClickListener {
-            MyApplication.prefs.setString("${id}lastMessage", lastMessage)
-            MyApplication.prefs.setLong("${id}time", currentTime)
             finish()
         }
     }
 
     override fun onBackPressed() {
-        MyApplication.prefs.setString("${id}lastMessage", lastMessage)
-        MyApplication.prefs.setLong("${id}time", currentTime)
         finish()
     }
 }

@@ -5,6 +5,7 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
+const val DB_CHAT = "chatList"
 const val TABLE_NAME = "ChatList"
 const val COL_ID = "id"
 const val COL_NAME = "name"
@@ -19,12 +20,12 @@ class DBChatHelper(
 ) : SQLiteOpenHelper(context, name, null, version) {
 
     override fun onCreate(db: SQLiteDatabase?) {
-        val create = "CREATE TABLE IF NOT EXISTS $TABLE_NAME (" +
-                "$COL_ID id, " +
-                "$COL_NAME NAME, " +
-                "$COL_MESSAGE MESSAGE, " +
-                "$COL_UPLOAD_DATE DATE, " +
-                "$COL_PROFILE_IMG img)"
+        val create = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + "(" +
+                COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COL_NAME + " NAME, " +
+                COL_MESSAGE + " MESSAGE, " +
+                COL_UPLOAD_DATE + " DATE, " +
+                COL_PROFILE_IMG + " img " + ")"
         db?.execSQL(create)
     }
 
@@ -33,7 +34,6 @@ class DBChatHelper(
     fun insertChatList(chat: Chat) {
         val wd = writableDatabase
         val values = ContentValues()
-        values.put(COL_ID, chat.id)
         values.put(COL_NAME, chat.name)
         values.put(COL_MESSAGE, chat.message)
         values.put(COL_UPLOAD_DATE, chat.uploadDate)
@@ -49,12 +49,11 @@ class DBChatHelper(
         val cursor = rd.rawQuery(select, null)
 
         while (cursor.moveToNext()) {
-            val id = cursor.getInt(cursor.getColumnIndex(COL_ID))
             val name = cursor.getString(cursor.getColumnIndex(COL_NAME))
             val message = cursor.getString(cursor.getColumnIndex(COL_MESSAGE))
             val date = cursor.getLong(cursor.getColumnIndex(COL_UPLOAD_DATE))
             val img = cursor.getInt(cursor.getColumnIndex(COL_PROFILE_IMG))
-            val chat = Chat(id, name, message, date, img)
+            val chat = Chat(name, message, date, img)
             list.add(chat)
         }
         cursor.close()
@@ -63,21 +62,43 @@ class DBChatHelper(
         return list
     }
 
+    fun searchChat(newName: String): Chat {
+        val select = "SELECT * FROM $TABLE_NAME"
+        val rd = readableDatabase
+        val cursor = rd.rawQuery(select, null)
+        var answer = Chat("", "", 0L, 0)
+
+        while (cursor.moveToNext()) {
+            val name = cursor.getString(cursor.getColumnIndex(COL_NAME))
+            val message = cursor.getString(cursor.getColumnIndex(COL_MESSAGE))
+            val date = cursor.getLong(cursor.getColumnIndex(COL_UPLOAD_DATE))
+            val img = cursor.getInt(cursor.getColumnIndex(COL_PROFILE_IMG))
+            if (name == newName) {
+                answer = Chat(name, message, date, img)
+                break
+            }
+        }
+
+        cursor.close()
+        rd.close()
+
+        return answer
+    }
+
     fun updateChatList(chat: Chat) {
         val wd = writableDatabase
         val values = ContentValues()
-        values.put(COL_ID, chat.id)
         values.put(COL_NAME, chat.name)
         values.put(COL_MESSAGE, chat.message)
         values.put(COL_UPLOAD_DATE, chat.uploadDate)
         values.put(COL_PROFILE_IMG, chat.profileImage)
-        wd.update(TABLE_NAME, values, "id = ${chat.id}", null)
+        wd.update(TABLE_NAME, values, "id = $COL_ID", null)
         wd.close()
     }
 
     fun deleteChatList(chat: Chat) {
         val wd = writableDatabase
-        wd.delete(TABLE_NAME, "id = ${chat.id}", null)
+        wd.delete(TABLE_NAME, "id = $COL_ID", null)
         wd.close()
     }
 }

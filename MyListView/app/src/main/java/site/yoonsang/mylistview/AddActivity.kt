@@ -17,7 +17,7 @@ class AddActivity : AppCompatActivity() {
         val peopleActiveList = arrayListOf<PeopleActive>()
 
         for (i in 1..10) {
-            peopleActiveList.add(PeopleActive("김덕배", R.drawable.user))
+            peopleActiveList.add(PeopleActive("김덕배$i", R.drawable.user))
         }
 
         binding.addRecyclerView.apply {
