@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginHorizontal="5dp"
+    tools:ignore="MissingDefaultResource">
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dp">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/honggildong" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="2dp"
+            android:background="@drawable/subscribe_new" />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/channel_icon_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="홍튜브" />
+
+</LinearLayout>

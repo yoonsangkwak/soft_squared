@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">MyApp</string>
+    <string name="honggildong">honggildong</string>
+    <string name="add_image_contentDescription">add</string>
+    <string name="menu_image_contentDescription">menu</string>
+    <string name="profile_image">profile_image</string>
+    <string name="profile_add">profile_add</string>
+    <string name="post_count">12</string>
+    <string name="post_text">게시물</string>
+    <string name="follower_count">123</string>
+    <string name="follower_text">팔로워</string>
+    <string name="following_count">456</string>
+    <string name="following_text">팔로잉</string>
+    <string name="name_text">홍길동</string>
+    <string name="table_following_text">팔로우</string>
+    <string name="table_message_text">메시지</string>
+    <string name="table_menu_text">∨</string>
+    <string name="bottom_home">home</string>
+    <string name="bottom_search">search</string>
+    <string name="bottom_plus">plus</string>
+    <string name="bottom_bag">bag</string>
+    <string name="bottom_profile">profile</string>
+    <string name="content">content</string>
+    <string name="arrow_back">arrow_back</string>
+    <string name="verified">verified</string>
+    <string name="search_hint">검색</string>
+    <string name="search_image">검색</string>
+    <string name="shop_text">Shop</string>
+    <string name="wishlist">wishlist</string>
+    <string name="menu">menu</string>
+    <string name="horizontal_text">Shop 둘러보기</string>
+</resources>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="playlist_array">
+        <item>최근 추가순</item>
+        <item>가나다순</item>
+    </string-array>
+</resources>

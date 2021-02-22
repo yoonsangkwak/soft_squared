@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/thumbnail_video"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:src="@drawable/hongildong_thumbnail"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/video_relative"/>
+
+    <TextView
+        android:id="@+id/tv_time_video"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:background="#000"
+        android:padding="5dp"
+        android:text="9:56"
+        android:textColor="#fff"
+        app:layout_constraintBottom_toBottomOf="@id/thumbnail_video"
+        app:layout_constraintEnd_toEndOf="@id/thumbnail_video" />
+
+    <RelativeLayout
+        android:id="@+id/video_relative"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/thumbnail_video">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/video_profile_image"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="20dp"
+            app:cardCornerRadius="20dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/honggildong" />
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:id="@+id/tv_video_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="유튜브 시작하겠습니다.."
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:layout_toEndOf="@id/video_profile_image" />
+        <TextView
+            android:id="@+id/tv_channel_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="홍튜브"
+            android:layout_toEndOf="@id/video_profile_image"
+            android:layout_below="@id/tv_video_title" />
+        <TextView
+            android:id="@+id/text_dot_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="5dp"
+            android:layout_toEndOf="@id/tv_channel_name"
+            android:layout_below="@id/tv_video_title"
+            android:text="·"
+            android:textStyle="bold" />
+        <TextView
+            android:id="@+id/tv_view_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/text_dot_1"
+            android:layout_below="@id/tv_video_title"
+            android:text="조회수 12만회" />
+        <TextView
+            android:id="@+id/text_dot_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="5dp"
+            android:layout_toEndOf="@id/tv_view_count"
+            android:layout_below="@id/tv_video_title"
+            android:text="·"
+            android:textStyle="bold" />
+        <TextView
+            android:id="@+id/tv_upload_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/text_dot_2"
+            android:layout_below="@id/tv_video_title"
+            android:text="1개월 전" />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_more_vertical"
+            app:tint="@color/black"
+            android:layout_alignParentEnd="true" />
+
+
+    </RelativeLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
