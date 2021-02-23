@@ -2,7 +2,6 @@ package site.yoonsang.mylistview
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,11 +31,6 @@ class ChatAdapter(
         context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
     lateinit var binding: ItemChatBinding
     var chatSearchList: ArrayList<Chat> = chatList.clone() as ArrayList<Chat>
-
-    init {
-        Log.d("checkkk", "g " + chatSearchList)
-        Log.d("checkkk", "g " + chatList)
-    }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val chatUserProfileImage: ImageView = binding.chatUserProfileImage
@@ -90,7 +84,7 @@ class ChatAdapter(
                 } else {
                     val filteredList = ArrayList<Chat>()
                     for (item in chatList) {
-                        if (item.name.contains(charString)) {
+                        if (item.name.contains(charString, true)) {
                             filteredList.add(item)
                         }
                     }

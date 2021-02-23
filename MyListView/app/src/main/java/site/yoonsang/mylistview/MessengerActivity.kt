@@ -10,9 +10,6 @@ import site.yoonsang.mylistview.databinding.ActivityMessengerBinding
 class MessengerActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMessengerBinding
-    var id = 0
-    var lastMessage = ""
-    var currentTime = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,11 +34,10 @@ class MessengerActivity : AppCompatActivity() {
             val message = binding.messengerMyChatEditText.text.trim().toString()
             if (message.isNotEmpty()) {
                 helper.insertMyChat(Message(message))
-                lastMessage = message
-                currentTime = System.currentTimeMillis()
+                val currentTime = System.currentTimeMillis()
                 val chat = chatHelper.searchChat(binding.messengerOppositeName.text.toString())
                 if (chat != null) {
-                    chatHelper.updateChatList(Chat(chat.name, lastMessage, currentTime, chat.profileImage))
+                    chatHelper.updateChatList(Chat(chat.name, message, currentTime, chat.profileImage))
                 }
                 binding.messengerMyChatEditText.setText("")
                 adapter.messageList.add(Message(message))

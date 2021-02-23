@@ -1,15 +1,14 @@
 package site.yoonsang.mylistview
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.recyclerview.widget.LinearLayoutManager
 import site.yoonsang.mylistview.databinding.FragmentChatSearchBinding
 
@@ -37,6 +36,10 @@ class ChatSearchFragment : Fragment() {
             adapter = chatAdapter
         }
 
+        binding.chatEdittext.requestFocus()
+        val imm = context!!.getSystemService (Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
+
         binding.chatEdittext.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
@@ -49,6 +52,12 @@ class ChatSearchFragment : Fragment() {
         })
 
         return binding.root
+    }
+
+    override fun onPause() {
+        super.onPause()
+        val imm = context!!.getSystemService (Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view?.windowToken, 0)
     }
 
     override fun onDestroyView() {
