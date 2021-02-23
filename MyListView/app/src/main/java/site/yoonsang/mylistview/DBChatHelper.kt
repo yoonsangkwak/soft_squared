@@ -44,7 +44,7 @@ class DBChatHelper(
 
     fun selectChatList(): ArrayList<Chat> {
         val list = arrayListOf<Chat>()
-        val select = "SELECT * FROM $TABLE_NAME"
+        val select = "SELECT * FROM $TABLE_NAME ORDER BY $COL_UPLOAD_DATE DESC"
         val rd = readableDatabase
         val cursor = rd.rawQuery(select, null)
 
@@ -92,13 +92,13 @@ class DBChatHelper(
         values.put(COL_MESSAGE, chat.message)
         values.put(COL_UPLOAD_DATE, chat.uploadDate)
         values.put(COL_PROFILE_IMG, chat.profileImage)
-        wd.update(TABLE_NAME, values, "id = $COL_ID", null)
+        wd.update(TABLE_NAME, values, "$COL_NAME = ?", arrayOf(chat.name))
         wd.close()
     }
 
     fun deleteChatList(chat: Chat) {
         val wd = writableDatabase
-        wd.delete(TABLE_NAME, "id = $COL_ID", null)
+        wd.delete(TABLE_NAME, "$COL_NAME = ?", arrayOf(chat.name))
         wd.close()
     }
 }

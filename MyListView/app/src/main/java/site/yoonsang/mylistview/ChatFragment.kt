@@ -1,9 +1,7 @@
 package site.yoonsang.mylistview
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -42,17 +40,29 @@ class ChatFragment : Fragment() {
 
         binding.chatAdd.setOnClickListener {
             val intent = Intent(context, AddActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
             startActivity(intent)
         }
 
+//        val chatHelper = DBChatHelper(context!!, DB_CHAT, DB_VERSION)
+//
+//        binding.chatRecyclerView.apply {
+//            layoutManager = LinearLayoutManager(context)
+//            adapter = ChatAdapter(context!!, chatHelper.selectChatList())
+//        }
+
+        return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
         val chatHelper = DBChatHelper(context!!, DB_CHAT, DB_VERSION)
 
         binding.chatRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = ChatAdapter(context!!, chatHelper.selectChatList())
         }
-
-        return binding.root
+        binding.chatRecyclerView.adapter?.notifyDataSetChanged()
     }
 
     override fun onDestroyView() {

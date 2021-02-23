@@ -1,9 +1,7 @@
 package site.yoonsang.mylistview
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -59,11 +57,6 @@ class ChatAdapter(
         val sdf = SimpleDateFormat(" · M월 d일", Locale.KOREA).format(time)
         holder.chatUploadDate.text = sdf
 
-//        holder.chatLastMessage.text = MyApplication.prefs.getString("${chatSearchList[position].id}lastMessage")
-//        val time = MyApplication.prefs.getLong("${chatSearchList[position].id}time")
-//        val sdf = SimpleDateFormat(" · M월 d일", Locale.KOREA).format(time)
-//        holder.chatUploadDate.text = sdf
-
         holder.chatMainLayout.setOnClickListener {
             val intent = Intent(it.context, MessengerActivity::class.java)
             intent.putExtra("image", chat.profileImage)
@@ -72,7 +65,8 @@ class ChatAdapter(
         }
 
         holder.chatDelete.setOnClickListener {
-            notifyItemRemoved(position)
+            chatHelper.deleteChatList(chat)
+            notifyDataSetChanged()
         }
     }
 

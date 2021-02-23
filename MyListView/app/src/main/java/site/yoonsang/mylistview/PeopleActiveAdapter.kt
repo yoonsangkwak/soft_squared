@@ -34,15 +34,6 @@ class PeopleActiveAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.peopleActiveProfileImage.setImageResource(peopleActiveList[position].profileImage)
         holder.peopleActiveName.text = peopleActiveList[position].name
-
-        holder.itemView.setOnClickListener {
-            val intent = Intent(it.context, MessengerActivity::class.java)
-            val chatHelper = DBChatHelper(holder.itemView.context, "chatList", DB_VERSION)
-            intent.putExtra("name", peopleActiveList[position].name)
-            intent.putExtra("image", peopleActiveList[position].profileImage)
-            chatHelper.insertChatList(Chat(peopleActiveList[position].name, "", System.currentTimeMillis(), peopleActiveList[position].profileImage))
-            holder.itemView.context.startActivity(intent)
-        }
     }
 
     override fun getItemCount(): Int = peopleActiveList.size

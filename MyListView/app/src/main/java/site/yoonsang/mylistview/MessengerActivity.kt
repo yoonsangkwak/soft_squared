@@ -1,9 +1,7 @@
 package site.yoonsang.mylistview
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.ScrollView
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,7 +24,7 @@ class MessengerActivity : AppCompatActivity() {
         binding.messengerTopOppositeName.text = intent.getStringExtra("name")
         binding.messengerOppositeName.text = intent.getStringExtra("name")
 
-        val helper = DBHelper(this, "$id", DB_VERSION)
+        val helper = DBHelper(this, binding.messengerOppositeName.text.toString(), DB_VERSION)
         val myMessage = helper.selectMyChat()
         val adapter = MyMessageAdapter(this)
         binding.messengerMyChatRecyclerView.adapter = adapter

@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.recyclerview.widget.LinearLayoutManager
 import site.yoonsang.mylistview.databinding.FragmentChatSearchBinding
 
@@ -25,8 +27,6 @@ class ChatSearchFragment : Fragment() {
         val chatHelper = DBChatHelper(context!!, DB_CHAT, DB_VERSION)
         val chatList = chatHelper.selectChatList()
         val chatAdapter = ChatAdapter(context!!, chatList)
-
-        binding.chatEdittext.requestFocus()
 
         binding.searchCancel.setOnClickListener {
             fragmentManager?.popBackStack()

@@ -21,8 +21,12 @@ class PeopleActiveFragment : Fragment() {
 
         val peopleActiveList = arrayListOf<PeopleActive>()
 
-        for (i in 1..10) {
+        for (i in 1..4) {
             peopleActiveList.add(PeopleActive("김덕배$i", R.drawable.user))
+            peopleActiveList.add(PeopleActive("둘리$i", R.drawable.doollee))
+            peopleActiveList.add(PeopleActive("도우너$i", R.drawable.douner))
+            peopleActiveList.add(PeopleActive("마이콜$i", R.drawable.michol))
+            peopleActiveList.add(PeopleActive("고길동$i", R.drawable.gogildong))
         }
 
         binding.peopleActiveRecyclerView.apply {
