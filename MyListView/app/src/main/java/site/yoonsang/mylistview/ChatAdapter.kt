@@ -10,6 +10,7 @@ import android.widget.Filterable
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.chauthai.swipereveallayout.ViewBinderHelper
 import site.yoonsang.mylistview.databinding.ItemChatBinding
 import java.text.SimpleDateFormat
 import java.util.*
@@ -31,6 +32,7 @@ class ChatAdapter(
         context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
     lateinit var binding: ItemChatBinding
     var chatSearchList: ArrayList<Chat> = chatList.clone() as ArrayList<Chat>
+    val binderHelper = ViewBinderHelper()
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val chatUserProfileImage: ImageView = binding.chatUserProfileImage
@@ -64,6 +66,10 @@ class ChatAdapter(
                 intent.putExtra("name", chat.name)
                 holder.itemView.context.startActivity(intent)
             }
+
+            val dataObject = chatSearchList[position]
+            binderHelper.setOpenOnlyOne(true)
+            binderHelper.bind(binding.chatSwipeLayout, dataObject.name)
 
             holder.chatDelete.setOnClickListener {
                 chatSearchList.removeAt(holder.adapterPosition)
