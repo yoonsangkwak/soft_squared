@@ -21,7 +21,7 @@ class PeopleListAdapter(
 
     private val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
     lateinit var binding: ItemPeopleListBinding
-    var peopleSearchList: ArrayList<PeopleList> = peopleList.clone() as ArrayList<PeopleList>
+    var peopleSearchList = peopleList.clone() as ArrayList<PeopleList>
 
     inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val peopleListProfileImage: ImageView = binding.peopleListProfileImage
@@ -34,20 +34,22 @@ class PeopleListAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.peopleListProfileImage.setImageResource(peopleList[position].profileImage)
-        holder.peopleListName.text = peopleList[position].name
+        holder.peopleListProfileImage.setImageResource(peopleSearchList[position].profileImage)
+        holder.peopleListName.text = peopleSearchList[position].name
 
         holder.itemView.setOnClickListener {
             val intent = Intent(it.context, MessengerActivity::class.java)
             val chatHelper = DBChatHelper(holder.itemView.context, DB_CHAT, DB_VERSION)
-            intent.putExtra("name", peopleList[position].name)
-            intent.putExtra("image", peopleList[position].profileImage)
-            chatHelper.insertChatList(Chat(peopleList[position].name, "이제 Messenger에서 친구와 메시지를 주고받을 수 있습니다.", System.currentTimeMillis(), peopleList[position].profileImage))
+            intent.putExtra("name", peopleSearchList[position].name)
+            intent.putExtra("image", peopleSearchList[position].profileImage)
+            if (chatHelper.searchChat(peopleSearchList[position].name) == null) {
+                chatHelper.insertChatList(Chat(peopleSearchList[position].name, "이제 Messenger에서 친구와 메시지를 주고받을 수 있습니다.", System.currentTimeMillis(), peopleSearchList[position].profileImage))
+            }
             holder.itemView.context.startActivity(intent)
         }
     }
 
-    override fun getItemCount(): Int = peopleList.size
+    override fun getItemCount(): Int = peopleSearchList.size
 
     override fun getFilter(): Filter {
         return object : Filter() {
@@ -58,7 +60,7 @@ class PeopleListAdapter(
                 } else {
                     val filteredList = ArrayList<PeopleList>()
                     for (item in peopleList) {
-                        if (item.name.contains(charString)) {
+                        if (item.name.contains(charString, true)) {
                             filteredList.add(item)
                         }
                     }

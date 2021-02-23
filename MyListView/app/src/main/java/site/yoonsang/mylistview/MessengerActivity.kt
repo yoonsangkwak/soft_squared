@@ -40,7 +40,9 @@ class MessengerActivity : AppCompatActivity() {
                 lastMessage = message
                 currentTime = System.currentTimeMillis()
                 val chat = chatHelper.searchChat(binding.messengerOppositeName.text.toString())
-                chatHelper.updateChatList(Chat(chat.name, lastMessage, currentTime, chat.profileImage))
+                if (chat != null) {
+                    chatHelper.updateChatList(Chat(chat.name, lastMessage, currentTime, chat.profileImage))
+                }
                 binding.messengerMyChatEditText.setText("")
                 adapter.messageList.add(Message(message))
                 adapter.notifyDataSetChanged()

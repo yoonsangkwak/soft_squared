@@ -44,13 +44,6 @@ class ChatFragment : Fragment() {
             startActivity(intent)
         }
 
-//        val chatHelper = DBChatHelper(context!!, DB_CHAT, DB_VERSION)
-//
-//        binding.chatRecyclerView.apply {
-//            layoutManager = LinearLayoutManager(context)
-//            adapter = ChatAdapter(context!!, chatHelper.selectChatList())
-//        }
-
         return binding.root
     }
 

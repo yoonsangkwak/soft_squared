@@ -2,6 +2,7 @@ package site.yoonsang.mylistview
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,6 +33,11 @@ class ChatAdapter(
     lateinit var binding: ItemChatBinding
     var chatSearchList: ArrayList<Chat> = chatList.clone() as ArrayList<Chat>
 
+    init {
+        Log.d("checkkk", "g " + chatSearchList)
+        Log.d("checkkk", "g " + chatList)
+    }
+
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val chatUserProfileImage: ImageView = binding.chatUserProfileImage
         val chatUserName: TextView = binding.chatUserName
@@ -50,23 +56,26 @@ class ChatAdapter(
         val chatHelper = DBChatHelper(holder.itemView.context, DB_CHAT, DB_VERSION)
         val chat = chatHelper.searchChat(chatSearchList[position].name)
 
-        holder.chatUserProfileImage.setImageResource(chat.profileImage)
-        holder.chatUserName.text = chat.name
-        holder.chatLastMessage.text = chat.message
-        val time = chat.uploadDate
-        val sdf = SimpleDateFormat(" · M월 d일", Locale.KOREA).format(time)
-        holder.chatUploadDate.text = sdf
+        if (chat != null) {
+            holder.chatUserProfileImage.setImageResource(chat.profileImage)
+            holder.chatUserName.text = chat.name
+            holder.chatLastMessage.text = chat.message
+            val time = chat.uploadDate
+            val sdf = SimpleDateFormat(" · M월 d일", Locale.KOREA).format(time)
+            holder.chatUploadDate.text = sdf
 
-        holder.chatMainLayout.setOnClickListener {
-            val intent = Intent(it.context, MessengerActivity::class.java)
-            intent.putExtra("image", chat.profileImage)
-            intent.putExtra("name", chat.name)
-            holder.itemView.context.startActivity(intent)
-        }
+            holder.chatMainLayout.setOnClickListener {
+                val intent = Intent(it.context, MessengerActivity::class.java)
+                intent.putExtra("image", chat.profileImage)
+                intent.putExtra("name", chat.name)
+                holder.itemView.context.startActivity(intent)
+            }
 
-        holder.chatDelete.setOnClickListener {
-            chatHelper.deleteChatList(chat)
-            notifyDataSetChanged()
+            holder.chatDelete.setOnClickListener {
+                chatSearchList.removeAt(holder.adapterPosition)
+                notifyItemRemoved(position)
+                chatHelper.deleteChatList(chat)
+            }
         }
     }
 

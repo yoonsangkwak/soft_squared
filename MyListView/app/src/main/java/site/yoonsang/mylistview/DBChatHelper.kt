@@ -62,11 +62,11 @@ class DBChatHelper(
         return list
     }
 
-    fun searchChat(newName: String): Chat {
+    fun searchChat(newName: String): Chat? {
         val select = "SELECT * FROM $TABLE_NAME"
         val rd = readableDatabase
         val cursor = rd.rawQuery(select, null)
-        var answer = Chat("", "", 0L, 0)
+        var answer: Chat? = null
 
         while (cursor.moveToNext()) {
             val name = cursor.getString(cursor.getColumnIndex(COL_NAME))

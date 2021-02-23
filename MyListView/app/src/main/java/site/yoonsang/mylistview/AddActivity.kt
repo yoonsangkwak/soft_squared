@@ -2,7 +2,9 @@ package site.yoonsang.mylistview
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.inputmethod.InputMethodManager
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import site.yoonsang.mylistview.databinding.ActivityAddBinding
 
@@ -25,10 +27,23 @@ class AddActivity : AppCompatActivity() {
             peopleList.add(PeopleList("고길동$i", R.drawable.gogildong))
         }
 
+        val peopleListAdapter = PeopleListAdapter(this, peopleList)
+
         binding.addRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = PeopleListAdapter(context, peopleList)
+            adapter = peopleListAdapter
         }
+
+        binding.addEdittext.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                peopleListAdapter.filter.filter(s.toString())
+                peopleListAdapter.notifyDataSetChanged()
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        })
 
         binding.addCancel.setOnClickListener {
             finish()
