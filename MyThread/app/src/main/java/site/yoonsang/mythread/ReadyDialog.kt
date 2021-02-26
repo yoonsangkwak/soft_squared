@@ -1,0 +1,19 @@
+package site.yoonsang.mythread
+
+import android.app.Dialog
+import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import site.yoonsang.mythread.databinding.ReadyDialogBinding
+
+class ReadyDialog
+    constructor(context: Context): Dialog(context) {
+
+    val binding: ReadyDialogBinding = ReadyDialogBinding.inflate(layoutInflater)
+
+    init {
+        setCanceledOnTouchOutside(false)
+        window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        setContentView(binding.root)
+    }
+}
