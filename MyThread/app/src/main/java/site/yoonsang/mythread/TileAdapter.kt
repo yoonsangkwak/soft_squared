@@ -60,10 +60,11 @@ class TileAdapter(
             if (selected == now) {
                 if (selected >= 26 && selected == now) setUpVisible(position)
                 now++
-//                val rand: Int = (Math.random() * _26to50.size).toInt()
-                val rand: Int = Random().nextInt(_26to50.size)
-                update26to50(position, _26to50[rand])
-                _26to50.remove(rand)
+                if (_26to50.size > 0) {
+                    val rand: Int = Random().nextInt(_26to50.size)
+                    update26to50(position, _26to50[rand])
+                    _26to50.removeElement(_26to50[rand])
+                }
                 notifyItemChanged(position)
             }
         }
