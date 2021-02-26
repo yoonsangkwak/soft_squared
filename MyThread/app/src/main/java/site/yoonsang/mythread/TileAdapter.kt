@@ -1,6 +1,7 @@
 package site.yoonsang.mythread
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,17 +14,31 @@ class TileAdapter(
 ) : RecyclerView.Adapter<TileAdapter.ViewHolder>() {
 
     private val _1to50 = Vector<Int>()
+    private val _1to25 = Vector<Int>()
+    private val _26to50 = Vector<Int>()
     private val visible = Vector<Int>()
-    var now = 1
-    private var width: Int = 0
-    private var height: Int = 0
+    private var now = 1
     private val inflater =
         context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
     lateinit var binding: ItemTileBinding
 
     init {
+        for (i in 1..25) {
+            _1to25.add(i)
+            _26to50.add(i + 25)
+        }
+
         for (i in 0..24) {
             visible.add(i, View.VISIBLE)
+        }
+
+        while (_1to25.size > 0) {
+            val rand: Int = Random().nextInt(_1to25.size)
+            if (_1to25[rand] !in _1to50) {
+                init1to25(_1to25[rand])
+                _1to25.removeElement(_1to25[rand])
+                notifyDataSetChanged()
+            }
         }
     }
 
@@ -40,39 +55,33 @@ class TileAdapter(
         val number = _1to50[position]
         holder.tileNumber.text = number.toString()
         holder.tileNumber.visibility = visible[position]
-        if (width != 0 && height != 0) {
-            binding.tileNumber.layoutParams.width = width
-            binding.tileNumber.layoutParams.height = height
-        }
         holder.itemView.setOnClickListener {
-            val selected = Integer.parseInt(_1to50[position].toString())
+            val selected = Integer.parseInt(holder.tileNumber.text.toString())
             if (selected == now) {
                 if (selected >= 26 && selected == now) setUpVisible(position)
                 now++
-                val rand: Int = (Math.random() * _1to50.size).toInt()
-                update26to50(position)
+//                val rand: Int = (Math.random() * _26to50.size).toInt()
+                val rand: Int = Random().nextInt(_26to50.size)
+                update26to50(position, _26to50[rand])
+                _26to50.remove(rand)
+                notifyItemChanged(position)
             }
         }
     }
 
     override fun getItemCount(): Int = _1to50.size
 
-    fun init1to25(number: Int) {
+    private fun init1to25(number: Int) {
         _1to50.add(number)
     }
 
-    fun update26to50(position: Int, number: Int) {
+    private fun update26to50(position: Int, number: Int) {
         _1to50.removeAt(position)
         _1to50.add(position, number)
     }
 
-    fun setUpVisible(position: Int) {
+    private fun setUpVisible(position: Int) {
         visible.removeAt(position)
         visible.add(position, View.INVISIBLE)
-    }
-
-    fun setLength(width: Int, height: Int) {
-        this.width = width
-        this.height = height
     }
 }
