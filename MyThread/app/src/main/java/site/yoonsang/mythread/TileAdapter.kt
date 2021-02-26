@@ -13,34 +13,14 @@ class TileAdapter(
     context: Context,
 ) : RecyclerView.Adapter<TileAdapter.ViewHolder>() {
 
-    private val _1to50 = Vector<Int>()
-    private val _1to25 = Vector<Int>()
-    private val _26to50 = Vector<Int>()
-    private val visible = Vector<Int>()
-    private var now = 1
+    val _1to50 = Vector<Int>()
+    val _1to25 = Vector<Int>()
+    val _26to50 = Vector<Int>()
+    val visible = Vector<Int>()
+    var now = 1
     private val inflater =
         context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
     lateinit var binding: ItemTileBinding
-
-    init {
-        for (i in 1..25) {
-            _1to25.add(i)
-            _26to50.add(i + 25)
-        }
-
-        for (i in 0..24) {
-            visible.add(i, View.VISIBLE)
-        }
-
-        while (_1to25.size > 0) {
-            val rand: Int = Random().nextInt(_1to25.size)
-            if (_1to25[rand] !in _1to50) {
-                init1to25(_1to25[rand])
-                _1to25.removeElement(_1to25[rand])
-                notifyDataSetChanged()
-            }
-        }
-    }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tileNumber = binding.tileNumber
@@ -55,33 +35,20 @@ class TileAdapter(
         val number = _1to50[position]
         holder.tileNumber.text = number.toString()
         holder.tileNumber.visibility = visible[position]
-        holder.itemView.setOnClickListener {
-            val selected = Integer.parseInt(holder.tileNumber.text.toString())
-            if (selected == now) {
-                if (selected >= 26 && selected == now) setUpVisible(position)
-                now++
-                if (_26to50.size > 0) {
-                    val rand: Int = Random().nextInt(_26to50.size)
-                    update26to50(position, _26to50[rand])
-                    _26to50.removeElement(_26to50[rand])
-                }
-                notifyItemChanged(position)
-            }
-        }
     }
 
     override fun getItemCount(): Int = _1to50.size
 
-    private fun init1to25(number: Int) {
+    fun init1to25(number: Int) {
         _1to50.add(number)
     }
 
-    private fun update26to50(position: Int, number: Int) {
+    fun update26to50(position: Int, number: Int) {
         _1to50.removeAt(position)
         _1to50.add(position, number)
     }
 
-    private fun setUpVisible(position: Int) {
+    fun setUpVisible(position: Int) {
         visible.removeAt(position)
         visible.add(position, View.INVISIBLE)
     }
