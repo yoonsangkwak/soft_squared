@@ -8,4 +8,4 @@
     android:background="@drawable/tile_background"
     android:text="1"
     android:textColor="@color/white"
-    android:textSize="30sp" />
+    android:textSize="32sp" />

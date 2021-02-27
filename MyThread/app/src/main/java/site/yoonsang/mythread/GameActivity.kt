@@ -1,5 +1,7 @@
 package site.yoonsang.mythread
 
+import android.media.AudioManager
+import android.media.SoundPool
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
@@ -15,11 +17,16 @@ class GameActivity : AppCompatActivity() {
     private lateinit var binding: ActivityGameBinding
     private var time = 0
     private var readyTime = 3
+    private lateinit var timerTask: Timer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityGameBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val soundPool = SoundPool.Builder().build()
+        val soundSuccess = soundPool.load(this, R.raw.success_sound, 1)
+        val soundFail = soundPool.load(this, R.raw.fail_sound, 1)
 
         val readyDialog = ReadyDialog(this)
         readyDialog.binding.readyCount.text = readyTime.toString()
@@ -66,7 +73,7 @@ class GameActivity : AppCompatActivity() {
 
         binding.gameRecyclerView.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
             override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
-                if (e.action == MotionEvent.ACTION_UP) {
+                if (e.action == MotionEvent.ACTION_DOWN) {
                     val child = rv.findChildViewUnder(e.x, e.y) as AppCompatButton?
                     if (child != null) {
                         val selected = Integer.parseInt(child.text.toString())
@@ -74,31 +81,41 @@ class GameActivity : AppCompatActivity() {
                             val position = rv.getChildAdapterPosition(child)
                             if (selected >= 26 && selected == tileAdapter.now) tileAdapter.setUpVisible(position)
                             tileAdapter.now++
-                            binding.gameTargetNumber.text = tileAdapter.now.toString()
+                            if (tileAdapter.now < 51) binding.gameTargetNumber.text = tileAdapter.now.toString()
                             if (tileAdapter._26to50.size > 0) {
                                 val rand: Int = Random().nextInt(tileAdapter._26to50.size)
                                 tileAdapter.update26to50(position, tileAdapter._26to50[rand])
                                 tileAdapter._26to50.removeElement(tileAdapter._26to50[rand])
                             }
+                            soundPool.play(soundSuccess, 1f, 1f, 0, 0, 1f)
                             tileAdapter.notifyItemChanged(position)
+                        } else {
+                            soundPool.play(soundFail, 1f, 1f, 0, 0, 1f)
                         }
                     }
+                    if (tileAdapter.now == 51) timerTask.cancel()
                 }
-                return false
+                return true
             }
 
             override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {}
 
             override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
         })
+
         binding.gameRecyclerView.apply {
             layoutManager = GridLayoutManager(context, 5)
             adapter = tileAdapter
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        timerTask.cancel()
+    }
+
     private fun gameStart() {
-        val timerTask = kotlin.concurrent.timer(period = 10) {
+        timerTask = kotlin.concurrent.timer(period = 10) {
             time++
             val sec = time / 100
             val mSec = time % 100
