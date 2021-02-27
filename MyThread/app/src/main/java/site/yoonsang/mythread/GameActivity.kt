@@ -1,6 +1,5 @@
 package site.yoonsang.mythread
 
-import android.media.AudioManager
 import android.media.SoundPool
 import android.os.Bundle
 import android.view.MotionEvent
@@ -18,6 +17,8 @@ class GameActivity : AppCompatActivity() {
     private var time = 0
     private var readyTime = 3
     private lateinit var timerTask: Timer
+    private lateinit var readyTimerTask: Timer
+    private val sef = MyApplication.prefs.getBoolean("sef")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,29 +28,6 @@ class GameActivity : AppCompatActivity() {
         val soundPool = SoundPool.Builder().build()
         val soundSuccess = soundPool.load(this, R.raw.success_sound, 1)
         val soundFail = soundPool.load(this, R.raw.fail_sound, 1)
-
-        val readyDialog = ReadyDialog(this)
-        readyDialog.binding.readyCount.text = readyTime.toString()
-        readyDialog.show()
-
-        val readyTimerTask = kotlin.concurrent.timer(initialDelay = 1000, period = 1000) {
-            if (readyTime > -1) readyTime--
-            runOnUiThread {
-                when (readyTime) {
-                    0 -> {
-                        readyDialog.binding.readyCount.text = "Go!"
-                    }
-                    -1 -> {
-                        readyDialog.dismiss()
-                        cancel()
-                        gameStart()
-                    }
-                    else -> {
-                        readyDialog.binding.readyCount.text = readyTime.toString()
-                    }
-                }
-            }
-        }
 
         val tileAdapter = TileAdapter(this)
 
@@ -87,10 +65,10 @@ class GameActivity : AppCompatActivity() {
                                 tileAdapter.update26to50(position, tileAdapter._26to50[rand])
                                 tileAdapter._26to50.removeElement(tileAdapter._26to50[rand])
                             }
-                            soundPool.play(soundSuccess, 1f, 1f, 0, 0, 1f)
+                            if (sef) soundPool.play(soundSuccess, 1f, 1f, 0, 0, 1f)
                             tileAdapter.notifyItemChanged(position)
                         } else {
-                            soundPool.play(soundFail, 1f, 1f, 0, 0, 1f)
+                            if (sef) soundPool.play(soundFail, 1f, 1f, 0, 0, 1f)
                         }
                     }
                     if (tileAdapter.now == 51) timerTask.cancel()
@@ -109,9 +87,40 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        gameReady()
+    }
+
     override fun onPause() {
         super.onPause()
         timerTask.cancel()
+        readyTime = 3
+    }
+
+    private fun gameReady() {
+        val readyDialog = ReadyDialog(this)
+        readyDialog.binding.readyCount.text = readyTime.toString()
+        readyDialog.show()
+
+        readyTimerTask = kotlin.concurrent.timer(initialDelay = 1000, period = 1000) {
+            if (readyTime > -1) readyTime--
+            runOnUiThread {
+                when (readyTime) {
+                    0 -> {
+                        readyDialog.binding.readyCount.text = "Go!"
+                    }
+                    -1 -> {
+                        readyDialog.dismiss()
+                        cancel()
+                        gameStart()
+                    }
+                    else -> {
+                        readyDialog.binding.readyCount.text = readyTime.toString()
+                    }
+                }
+            }
+        }
     }
 
     private fun gameStart() {
