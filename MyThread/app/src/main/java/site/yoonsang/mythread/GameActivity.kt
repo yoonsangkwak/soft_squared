@@ -16,8 +16,10 @@ class GameActivity : AppCompatActivity() {
     private lateinit var binding: ActivityGameBinding
     private var time = 0
     private var readyTime = 3
+    private var hintTime = 0
     private lateinit var timerTask: Timer
     private lateinit var readyTimerTask: Timer
+    private lateinit var hintTimerTask: Timer
     private val sef = MyApplication.prefs.getBoolean("sef")
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,6 +76,9 @@ class GameActivity : AppCompatActivity() {
                     if (tileAdapter.now == 51) {
                         timerTask.cancel()
                         val recordDialog = RecordDialog(this@GameActivity, time)
+                        recordDialog.setOnOKClickedListener {
+                            finish()
+                        }
                         recordDialog.start()
                     }
                 }
