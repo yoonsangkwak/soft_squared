@@ -71,7 +71,7 @@
         android:layout_gravity="center_horizontal|bottom"
         android:orientation="horizontal">
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/sound_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -84,7 +84,7 @@
             android:textColor="@color/white"
             android:textSize="20sp" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/sound_ok"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

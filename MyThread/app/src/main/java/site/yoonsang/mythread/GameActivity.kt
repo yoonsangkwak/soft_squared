@@ -71,7 +71,11 @@ class GameActivity : AppCompatActivity() {
                             if (sef) soundPool.play(soundFail, 1f, 1f, 0, 0, 1f)
                         }
                     }
-                    if (tileAdapter.now == 51) timerTask.cancel()
+                    if (tileAdapter.now == 51) {
+                        timerTask.cancel()
+                        val recordDialog = RecordDialog(this@GameActivity, time)
+                        recordDialog.start()
+                    }
                 }
                 return true
             }

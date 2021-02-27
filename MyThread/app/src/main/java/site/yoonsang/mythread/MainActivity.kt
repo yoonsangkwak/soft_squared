@@ -33,6 +33,11 @@ class MainActivity : AppCompatActivity() {
             }
             soundDialog.start()
         }
+
+        binding.mainMenuHighScores.setOnClickListener {
+            val highScoreDialog = HighScoreDialog(this)
+            highScoreDialog.start()
+        }
     }
 
     override fun onResume() {
