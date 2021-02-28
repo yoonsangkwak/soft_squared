@@ -38,10 +38,6 @@ constructor(context: Context) : Dialog(context) {
             dismiss()
         }
 
-        binding.soundCancel.setOnClickListener {
-            dismiss()
-        }
-
         show()
     }
 

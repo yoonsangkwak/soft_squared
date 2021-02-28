@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="360dp"
-    android:layout_height="360dp"
+    android:layout_height="500dp"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="360dp"
-        android:layout_height="360dp"
-        android:background="#99000000"
+        android:layout_height="500dp"
+        android:background="#FFC8A9"
         android:orientation="vertical">
 
         <LinearLayout
@@ -19,8 +19,10 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:padding="10dp"
                 android:background="@drawable/tile_background"
                 android:gravity="center"
+                android:fontFamily="@font/jalnan"
                 android:text="랭킹"
                 android:textColor="@color/white"
                 android:textSize="20sp" />
@@ -28,8 +30,10 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:padding="10dp"
                 android:background="@drawable/tile_background"
                 android:gravity="center"
+                android:fontFamily="@font/jalnan"
                 android:text="이름"
                 android:textColor="@color/white"
                 android:textSize="20sp" />
@@ -37,8 +41,10 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:padding="10dp"
                 android:background="@drawable/tile_background"
                 android:gravity="center"
+                android:fontFamily="@font/jalnan"
                 android:text="점수"
                 android:textColor="@color/white"
                 android:textSize="20sp" />
@@ -55,7 +61,9 @@
             android:id="@+id/high_score_close"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/tile_background"
+            android:layout_margin="10dp"
+            android:background="@drawable/ok_background"
+            android:fontFamily="@font/jalnan"
             android:text="닫기"
             android:textColor="@color/white"
             android:textSize="20sp"

@@ -12,7 +12,9 @@
         android:layout_weight="1"
         android:layout_gravity="center"
         android:gravity="center"
+        android:fontFamily="@font/jalnan"
         android:textColor="@color/white"
+        android:textSize="18sp"
         android:text="랭킹" />
 
     <TextView
@@ -22,7 +24,9 @@
         android:layout_weight="1"
         android:layout_gravity="center"
         android:gravity="center"
+        android:fontFamily="@font/jalnan"
         android:textColor="@color/white"
+        android:textSize="18sp"
         android:text="이름" />
 
     <TextView
@@ -32,6 +36,8 @@
         android:layout_weight="1"
         android:layout_gravity="center"
         android:gravity="center"
+        android:fontFamily="@font/jalnan"
         android:textColor="@color/white"
+        android:textSize="18sp"
         android:text="000.00" />
 </LinearLayout>

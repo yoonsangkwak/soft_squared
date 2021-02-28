@@ -64,6 +64,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/jalnan"
                 android:text="NEXT"
                 android:textColor="@color/white"
                 android:textSize="20sp" />
@@ -72,6 +73,7 @@
                 android:id="@+id/game_target_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/jalnan"
                 android:text="1"
                 android:textColor="@color/white"
                 android:textSize="40sp" />
@@ -89,6 +91,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/jalnan"
                 android:text="TIME SCORE"
                 android:textColor="@color/white"
                 android:textSize="20sp" />

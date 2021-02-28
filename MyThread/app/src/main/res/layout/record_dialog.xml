@@ -7,13 +7,15 @@
     <LinearLayout
         android:layout_width="360dp"
         android:layout_height="360dp"
-        android:background="#99000000"
+        android:background="#FFC8A9"
         android:gravity="center"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="bottom"
             android:layout_marginBottom="10dp"
             android:orientation="horizontal">
 
@@ -24,14 +26,16 @@
                 android:fontFamily="@font/digitalnumbers"
                 android:text="000"
                 android:textColor="@color/white"
-                android:textSize="36sp" />
+                android:textSize="40sp" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/digitalnumbers"
                 android:text="."
-                android:textSize="36sp"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                android:textSize="40sp" />
+
             <TextView
                 android:id="@+id/record_time_milli_second"
                 android:layout_width="wrap_content"
@@ -39,34 +43,38 @@
                 android:fontFamily="@font/digitalnumbers"
                 android:text="00"
                 android:textColor="@color/white"
-                android:textSize="36sp" />
+                android:textSize="40sp" />
         </LinearLayout>
 
         <EditText
             android:id="@+id/record_edit_name"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_gravity="center"
             android:background="@null"
+            android:fontFamily="@font/jalnan"
+            android:gravity="center"
             android:hint="기록할 이름을 입력하세요."
             android:inputType="text"
             android:maxLength="10"
             android:textColor="@color/white"
             android:textColorHint="@color/white"
-            android:textSize="18sp" />
+            android:textSize="24sp" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/record_ok"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:gravity="center"
+            android:layout_margin="10dp"
+            android:background="@drawable/ok_background"
+            android:fontFamily="@font/jalnan"
+            android:text="확인"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
     </LinearLayout>
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/record_ok"
-        android:layout_width="360dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal|bottom"
-        android:background="@drawable/tile_background"
-        android:padding="10dp"
-        android:text="확인"
-        android:textColor="@color/white"
-        android:textSize="20sp"
-        android:textStyle="bold" />
-
 </FrameLayout>

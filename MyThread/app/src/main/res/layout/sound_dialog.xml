@@ -2,99 +2,97 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="360dp"
-    android:layout_height="360dp"
+    android:layout_height="500dp"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="360dp"
-        android:layout_height="360dp"
-        android:background="#99000000"
-        android:gravity="center"
-        android:orientation="horizontal">
+        android:layout_height="500dp"
+        android:background="#FFC8A9"
+        android:gravity="center">
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:orientation="vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:text="배경음악"
-                android:textColor="@color/white"
-                android:textSize="36sp" />
+                android:layout_marginBottom="10dp"
+                android:gravity="center"
+                android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="wrap_content"
+                <TextView
+                    android:layout_width="150dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="10dp"
+                    android:gravity="center"
+                    android:fontFamily="@font/jalnan"
+                    android:text="배경음악"
+                    android:textColor="@color/white"
+                    android:textSize="36sp" />
+
+                <CheckBox
+                    android:id="@+id/sound_background"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:checked="true"
+                    android:buttonTint="#EC407A"
+                    android:fontFamily="@font/jalnan"
+                    android:text="ON"
+                    android:textColor="@color/white"
+                    android:textSize="20sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:text="효과음"
-                android:textColor="@color/white"
-                android:textSize="36sp" />
+                android:gravity="center"
+                android:orientation="horizontal">
 
+                <TextView
+                    android:layout_width="150dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="10dp"
+                    android:gravity="center"
+                    android:fontFamily="@font/jalnan"
+                    android:text="효과음"
+                    android:textColor="@color/white"
+                    android:textSize="36sp" />
+
+                <CheckBox
+                    android:id="@+id/sound_effect"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:checked="true"
+                    android:buttonTint="#EC407A"
+                    android:fontFamily="@font/jalnan"
+                    android:text="ON"
+                    android:textColor="@color/white"
+                    android:textSize="20sp" />
+            </LinearLayout>
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:paddingEnd="20dp">
-
-            <CheckBox
-                android:id="@+id/sound_background"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:checked="true"
-                android:text="ON"
-                android:textColor="@color/white"
-                android:textSize="20sp" />
-
-            <CheckBox
-                android:id="@+id/sound_effect"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:checked="true"
-                android:text="ON"
-                android:textColor="@color/white"
-                android:textSize="20sp" />
-        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="360dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal|bottom"
+        android:layout_gravity="bottom|center"
         android:orientation="horizontal">
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/sound_cancel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:padding="10dp"
-            android:background="@drawable/tile_background"
-            android:gravity="center"
-            android:text="취소"
-            android:textStyle="bold"
-            android:textColor="@color/white"
-            android:textSize="20sp" />
-
-        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/sound_ok"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:padding="10dp"
-            android:background="@drawable/tile_background"
-            android:gravity="center"
+            android:layout_margin="10dp"
+            android:background="@drawable/ok_background"
+            android:fontFamily="@font/jalnan"
             android:text="확인"
-            android:textStyle="bold"
             android:textColor="@color/white"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:textStyle="bold" />
     </LinearLayout>
 </FrameLayout>
