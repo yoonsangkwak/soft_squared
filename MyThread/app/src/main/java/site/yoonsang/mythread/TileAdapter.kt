@@ -1,10 +1,15 @@
 package site.yoonsang.mythread
 
 import android.content.Context
+import android.graphics.Color
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.AppCompatButton
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import site.yoonsang.mythread.databinding.ItemTileBinding
 import java.util.*
@@ -28,6 +33,11 @@ class TileAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         binding = ItemTileBinding.inflate(inflater, parent, false)
+        val lp: GridLayoutManager.LayoutParams =
+            binding.root.layoutParams as GridLayoutManager.LayoutParams
+        lp.width = (parent.width / 5.5).toInt()
+        lp.height = (parent.width / 5.5).toInt()
+        binding.root.layoutParams = lp
         return ViewHolder(binding.root)
     }
 
@@ -38,6 +48,21 @@ class TileAdapter(
     }
 
     override fun getItemCount(): Int = _1to50.size
+
+    fun setHint() {
+        val handler = Handler(Looper.getMainLooper())
+        val hint = Thread {
+            Thread.sleep(2000)
+            handler.post {
+                Log.d("checkkk", "핸들")
+                if (binding.tileNumber.text.toString() == now.toString()) {
+                    binding.tileNumber.setTextColor(Color.RED)
+                    Log.d("checkkk", "색변경")
+                }
+            }
+        }
+        hint.start()
+    }
 
     fun init1to25(number: Int) {
         _1to50.add(number)
