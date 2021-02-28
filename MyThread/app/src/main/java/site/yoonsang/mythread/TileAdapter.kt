@@ -35,8 +35,8 @@ class TileAdapter(
         binding = ItemTileBinding.inflate(inflater, parent, false)
         val lp: GridLayoutManager.LayoutParams =
             binding.root.layoutParams as GridLayoutManager.LayoutParams
-        lp.width = (parent.width / 5.5).toInt()
-        lp.height = (parent.width / 5.5).toInt()
+        lp.width = parent.measuredWidth / 6
+        lp.height = parent.measuredWidth / 6
         binding.root.layoutParams = lp
         return ViewHolder(binding.root)
     }
@@ -48,21 +48,6 @@ class TileAdapter(
     }
 
     override fun getItemCount(): Int = _1to50.size
-
-    fun setHint() {
-        val handler = Handler(Looper.getMainLooper())
-        val hint = Thread {
-            Thread.sleep(2000)
-            handler.post {
-                Log.d("checkkk", "핸들")
-                if (binding.tileNumber.text.toString() == now.toString()) {
-                    binding.tileNumber.setTextColor(Color.RED)
-                    Log.d("checkkk", "색변경")
-                }
-            }
-        }
-        hint.start()
-    }
 
     fun init1to25(number: Int) {
         _1to50.add(number)

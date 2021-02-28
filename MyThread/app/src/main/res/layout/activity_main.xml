@@ -4,26 +4,45 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
     tools:context=".MainActivity">
 
-    <ImageView
+    <LinearLayout
         android:id="@+id/main_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/logo6"
-        android:adjustViewBounds="true"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_marginBottom="10dp"
+        android:gravity="center"
+        android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@id/main_menu"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:fontFamily="@font/popround"
+            android:text="FASTFIFTY"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:textSize="50sp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:fontFamily="@font/popround"
+            android:text="DO·YOUR·BEST"
+            android:textColor="@color/black"
+            android:textSize="24sp" />
+    </LinearLayout>
+
 
     <LinearLayout
         android:id="@+id/main_menu"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:orientation="vertical"
-        android:padding="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -31,16 +50,17 @@
 
         <LinearLayout
             android:id="@+id/main_menu_start"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
-            android:layout_gravity="end"
-            android:orientation="horizontal">
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="#9FD8E1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="20dp">
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_gravity="center"
                 android:src="@drawable/ic_gamepad"
                 app:tint="@color/white" />
@@ -49,24 +69,27 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:fontFamily="@font/digitalnumbers"
+                android:fontFamily="@font/popbubble"
                 android:text="START"
+                android:textStyle="bold"
                 android:textColor="@color/white"
-                android:textSize="24sp" />
+                android:textSize="32sp" />
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/main_menu_sound"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginBottom="15dp"
-            android:orientation="horizontal">
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginVertical="10dp"
+            android:layout_weight="1"
+            android:background="#FFC8A9"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="20dp">
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_gravity="center"
                 android:src="@drawable/ic_gamepad"
                 app:tint="@color/white" />
@@ -75,50 +98,26 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:fontFamily="@font/digitalnumbers"
+                android:fontFamily="@font/popbubble"
                 android:text="SOUND"
+                android:textStyle="bold"
                 android:textColor="@color/white"
-                android:textSize="24sp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/main_menu_facebook"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginBottom="15dp"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_gamepad"
-                app:tint="@color/white" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:fontFamily="@font/digitalnumbers"
-                android:text="FACEBOOK"
-                android:textColor="@color/white"
-                android:textSize="24sp" />
+                android:textSize="32sp" />
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/main_menu_high_scores"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginBottom="15dp"
-            android:orientation="horizontal">
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="#93E1C7"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="20dp">
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_gravity="center"
                 android:src="@drawable/ic_gamepad"
                 app:tint="@color/white" />
@@ -127,37 +126,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:fontFamily="@font/digitalnumbers"
+                android:fontFamily="@font/popbubble"
                 android:text="HIGH SCORES"
+                android:textStyle="bold"
                 android:textColor="@color/white"
-                android:textSize="24sp" />
+                android:textSize="32sp" />
         </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/main_menu_more_apps"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_gamepad"
-                app:tint="@color/white" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:fontFamily="@font/digitalnumbers"
-                android:text="MORE APPS"
-                android:textColor="#EC407A"
-                android:textSize="24sp" />
-        </LinearLayout>
-
     </LinearLayout>
 
 
