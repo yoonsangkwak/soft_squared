@@ -60,7 +60,7 @@ class GameActivity : AppCompatActivity() {
                     val child = rv.findChildViewUnder(e.x, e.y) as AppCompatButton?
                     val present = rv.getChildAt(tileAdapter._1to50.indexOf(tileAdapter.now)) as AppCompatButton
                     handler.post {
-                        present.setTextColor(Color.BLACK)
+                        present.setBackgroundResource(R.drawable.number_background)
                     }
                     if (child != null) {
                         val selected = Integer.parseInt(child.text.toString())
@@ -82,7 +82,7 @@ class GameActivity : AppCompatActivity() {
                             Thread {
                                 Thread.sleep(3000)
                                 handler.post {
-                                    next.setTextColor(Color.RED)
+                                    next.setBackgroundResource(R.drawable.hint_background)
                                 }
                             }.start()
                             tileAdapter.notifyItemChanged(position)
