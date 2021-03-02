@@ -20,6 +20,7 @@ class GameActivity : AppCompatActivity() {
     private var readyTime = 3
     private lateinit var timerTask: Timer
     private lateinit var readyTimerTask: Timer
+    private lateinit var tileAdapter: TileAdapter
     private val sef = MyApplication.prefs.getBoolean("sef")
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,7 +32,7 @@ class GameActivity : AppCompatActivity() {
         val soundSuccess = soundPool.load(this, R.raw.success_sound, 1)
         val soundFail = soundPool.load(this, R.raw.fail_sound, 1)
 
-        val tileAdapter = TileAdapter(this)
+        tileAdapter = TileAdapter(this)
 
         for (i in 1..25) {
             tileAdapter._1to25.add(i)
@@ -123,7 +124,7 @@ class GameActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        gameReady()
+        if (tileAdapter.now < 51) gameReady()
     }
 
     override fun onPause() {

@@ -51,4 +51,6 @@ class RecordDialog(context: Context, private val time: Int) : Dialog(context) {
     interface RecordOKClickedListener {
         fun onOKClicked()
     }
+
+    override fun onBackPressed() {}
 }

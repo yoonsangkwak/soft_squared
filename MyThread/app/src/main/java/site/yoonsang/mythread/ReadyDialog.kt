@@ -15,4 +15,6 @@ class ReadyDialog(context: Context) : Dialog(context) {
         window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         setContentView(binding.root)
     }
+
+    override fun onBackPressed() {}
 }
