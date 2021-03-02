@@ -35,15 +35,19 @@ class TileAdapter(
         binding = ItemTileBinding.inflate(inflater, parent, false)
         val lp: GridLayoutManager.LayoutParams =
             binding.root.layoutParams as GridLayoutManager.LayoutParams
-        lp.width = parent.measuredWidth / 6
-        lp.height = parent.measuredWidth / 6
+        if (parent.measuredWidth <= parent.measuredHeight) {
+            lp.width = (parent.measuredWidth / 5.5).toInt()
+            lp.height = (parent.measuredWidth / 5.5).toInt()
+        } else {
+            lp.width = (parent.measuredHeight / 5.5).toInt()
+            lp.height = (parent.measuredHeight / 5.5).toInt()
+        }
         binding.root.layoutParams = lp
         return ViewHolder(binding.root)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val number = _1to50[position]
-        holder.tileNumber.text = number.toString()
+        holder.tileNumber.text = _1to50[position].toString()
         holder.tileNumber.visibility = visible[position]
     }
 

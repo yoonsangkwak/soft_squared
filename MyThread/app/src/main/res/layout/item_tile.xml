@@ -6,7 +6,7 @@
     android:layout_margin="5dp"
     android:padding="5dp"
     android:background="@drawable/number_background"
-    android:fontFamily="@font/popbubble"
+    android:fontFamily="@font/popbubblefill"
     android:text="1"
     android:textColor="@color/black"
     android:textSize="34sp" />

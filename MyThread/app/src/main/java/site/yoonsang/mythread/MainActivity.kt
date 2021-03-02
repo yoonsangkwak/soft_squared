@@ -15,6 +15,7 @@ class MainActivity : AppCompatActivity() {
     private var bgmIsOn = MyApplication.prefs.getBoolean("bgm")
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.MyThread)
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)

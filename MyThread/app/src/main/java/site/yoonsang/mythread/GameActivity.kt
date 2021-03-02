@@ -56,20 +56,35 @@ class GameActivity : AppCompatActivity() {
         binding.gameRecyclerView.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
             override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
                 if (e.action == MotionEvent.ACTION_DOWN) {
+                    val handler = Handler(Looper.getMainLooper())
                     val child = rv.findChildViewUnder(e.x, e.y) as AppCompatButton?
+                    val present = rv.getChildAt(tileAdapter._1to50.indexOf(tileAdapter.now)) as AppCompatButton
+                    handler.post {
+                        present.setTextColor(Color.BLACK)
+                    }
                     if (child != null) {
                         val selected = Integer.parseInt(child.text.toString())
                         if (selected == tileAdapter.now) {
                             val position = rv.getChildAdapterPosition(child)
-                            if (selected >= 26 && selected == tileAdapter.now) tileAdapter.setUpVisible(position)
+                            if (selected >= 26 && selected == tileAdapter.now) tileAdapter.setUpVisible(
+                                position
+                            )
                             tileAdapter.now++
-                            if (tileAdapter.now < 51) binding.gameTargetNumber.text = tileAdapter.now.toString()
+                            if (tileAdapter.now < 51) binding.gameTargetNumber.text =
+                                tileAdapter.now.toString()
                             if (tileAdapter._26to50.size > 0) {
                                 val rand: Int = Random().nextInt(tileAdapter._26to50.size)
                                 tileAdapter.update26to50(position, tileAdapter._26to50[rand])
                                 tileAdapter._26to50.removeElement(tileAdapter._26to50[rand])
                             }
                             if (sef) soundPool.play(soundSuccess, 1f, 1f, 0, 0, 1f)
+                            val next = rv.getChildAt(tileAdapter._1to50.indexOf(tileAdapter.now)) as AppCompatButton
+                            Thread {
+                                Thread.sleep(3000)
+                                handler.post {
+                                    next.setTextColor(Color.RED)
+                                }
+                            }.start()
                             tileAdapter.notifyItemChanged(position)
                         } else {
                             if (sef) soundPool.play(soundFail, 1f, 1f, 0, 0, 1f)
