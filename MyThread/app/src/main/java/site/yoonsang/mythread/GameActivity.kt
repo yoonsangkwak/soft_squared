@@ -54,12 +54,19 @@ class GameActivity : AppCompatActivity() {
         }
 
         binding.gameRecyclerView.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
+
+            var thread = Thread()
+
             override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
                 if (e.action == MotionEvent.ACTION_DOWN) {
                     val handler = Handler(Looper.getMainLooper())
                     val child = rv.findChildViewUnder(e.x, e.y) as AppCompatButton?
-                    val present = rv.getChildAt(tileAdapter._1to50.indexOf(tileAdapter.now)) as AppCompatButton
-                    handler.post {
+                    val present =
+                        rv.getChildAt(tileAdapter._1to50.indexOf(tileAdapter.now)) as AppCompatButton?
+                    if (present != null) {
+                        if (thread.isAlive) {
+                            thread.interrupt()
+                        }
                         present.setBackgroundResource(R.drawable.number_background)
                     }
                     if (child != null) {
@@ -78,13 +85,20 @@ class GameActivity : AppCompatActivity() {
                                 tileAdapter._26to50.removeElement(tileAdapter._26to50[rand])
                             }
                             if (sef) soundPool.play(soundSuccess, 1f, 1f, 0, 0, 1f)
-                            val next = rv.getChildAt(tileAdapter._1to50.indexOf(tileAdapter.now)) as AppCompatButton
-                            Thread {
-                                Thread.sleep(3000)
-                                handler.post {
-                                    next.setBackgroundResource(R.drawable.hint_background)
+                            val next =
+                                rv.getChildAt(tileAdapter._1to50.indexOf(tileAdapter.now)) as AppCompatButton?
+                            if (next != null) {
+                                thread = Thread {
+                                    try {
+                                        Thread.sleep(2000)
+                                        handler.post {
+                                            next.setBackgroundResource(R.drawable.hint_background)
+                                        }
+                                    } catch (e: InterruptedException) {
+                                    }
                                 }
-                            }.start()
+                                thread.start()
+                            }
                             tileAdapter.notifyItemChanged(position)
                         } else {
                             if (sef) soundPool.play(soundFail, 1f, 1f, 0, 0, 1f)
