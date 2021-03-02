@@ -6,8 +6,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import site.yoonsang.mythread.databinding.SoundDialogBinding
 
-class SoundDialog
-constructor(context: Context) : Dialog(context) {
+class SoundDialog(context: Context) : Dialog(context) {
     private val binding: SoundDialogBinding = SoundDialogBinding.inflate(layoutInflater)
     private lateinit var listener: SoundDialogOKClickedListener
     private var bgmIsOn = MyApplication.prefs.getBoolean("bgm")

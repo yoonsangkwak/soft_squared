@@ -1,14 +1,9 @@
 package site.yoonsang.mythread
 
 import android.content.Context
-import android.graphics.Color
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatButton
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import site.yoonsang.mythread.databinding.ItemTileBinding

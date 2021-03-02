@@ -1,11 +1,9 @@
 package site.yoonsang.mythread
 
-import android.graphics.Color
 import android.media.SoundPool
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -54,28 +52,24 @@ class GameActivity : AppCompatActivity() {
         }
 
         binding.gameRecyclerView.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
-
             var thread = Thread()
-
             override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
                 if (e.action == MotionEvent.ACTION_DOWN) {
                     val handler = Handler(Looper.getMainLooper())
                     val child = rv.findChildViewUnder(e.x, e.y) as AppCompatButton?
-                    val present =
-                        rv.getChildAt(tileAdapter._1to50.indexOf(tileAdapter.now)) as AppCompatButton?
-                    if (present != null) {
-                        if (thread.isAlive) {
-                            thread.interrupt()
-                        }
-                        present.setBackgroundResource(R.drawable.number_background)
-                    }
                     if (child != null) {
                         val selected = Integer.parseInt(child.text.toString())
                         if (selected == tileAdapter.now) {
+                            val present =
+                                rv.getChildAt(tileAdapter._1to50.indexOf(tileAdapter.now)) as AppCompatButton?
+                            if (present != null) {
+                                if (thread.isAlive) {
+                                    thread.interrupt()
+                                }
+                                present.setBackgroundResource(R.drawable.number_background)
+                            }
                             val position = rv.getChildAdapterPosition(child)
-                            if (selected >= 26 && selected == tileAdapter.now) tileAdapter.setUpVisible(
-                                position
-                            )
+                            if (selected >= 26 && selected == tileAdapter.now) tileAdapter.setUpVisible(position)
                             tileAdapter.now++
                             if (tileAdapter.now < 51) binding.gameTargetNumber.text =
                                 tileAdapter.now.toString()

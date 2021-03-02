@@ -6,8 +6,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import site.yoonsang.mythread.databinding.ReadyDialogBinding
 
-class ReadyDialog
-constructor(context: Context) : Dialog(context) {
+class ReadyDialog(context: Context) : Dialog(context) {
 
     val binding: ReadyDialogBinding = ReadyDialogBinding.inflate(layoutInflater)
 
