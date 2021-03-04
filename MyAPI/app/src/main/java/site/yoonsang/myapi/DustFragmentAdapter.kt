@@ -8,12 +8,30 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import site.yoonsang.myapi.databinding.FragmentDustDetailBinding
 
-class DustFragmentAdapter(context: Context, private val list: ArrayList<Fragment>) : RecyclerView.Adapter<DustFragmentAdapter.ViewHolder>() {
+class DustFragmentAdapter(
+    context: Context,
+    private val list: ArrayList<Fragment>,
+    private val pocket: HashMap<String, Double>
+    ) :
+    RecyclerView.Adapter<DustFragmentAdapter.ViewHolder>() {
 
-    private val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+    private val inflater =
+        context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
     lateinit var binding: FragmentDustDetailBinding
 
-    inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val nameFirst = binding.detailFirstName
+        val imageFirst = binding.detailFirstStatusImage
+        val statusFirst = binding.detailFirstStatusText
+        val concFirst = binding.detailFirstConc
+        val nameSecond = binding.detailSecondName
+        val imageSecond = binding.detailSecondStatusImage
+        val statusSecond = binding.detailSecondStatusText
+        val concSecond = binding.detailSecondConc
+        val nameThird = binding.detailThirdName
+        val imageThird = binding.detailThirdStatusImage
+        val statusThird = binding.detailThirdStatusText
+        val concThird = binding.detailThirdConc
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -25,7 +43,19 @@ class DustFragmentAdapter(context: Context, private val list: ArrayList<Fragment
         val index = position % list.size
         val item = list[index]
         if (position % 2 == 0) {
+            holder.nameFirst.text = "미세먼지"
+            holder.concFirst.text = "${pocket["pm2_5"]} ㎍/㎥"
+            holder.nameSecond.text = "초미세먼지"
+            holder.concSecond.text = "${pocket["pm10"]} ㎍/㎥"
+            holder.nameThird.text = "이산화질소"
+            holder.concThird.text = "${pocket["no2"]} ㎍/㎥"
         } else {
+            holder.nameFirst.text = "오존"
+            holder.concFirst.text = "${pocket["o3"]} ㎍/㎥"
+            holder.nameSecond.text = "일산화탄소"
+            holder.concSecond.text = "${pocket["co"]} ㎍/㎥"
+            holder.nameThird.text = "아황산가스"
+            holder.concThird.text = "${pocket["so2"]} ㎍/㎥"
         }
     }
 

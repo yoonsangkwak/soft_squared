@@ -30,16 +30,16 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val items = arrayListOf<Fragment>(
-            DustDetailFragment()
-        )
-        binding.mainViewpager2.apply {
-            adapter = DustFragmentAdapter(context, items)
-            currentItem = Int.MAX_VALUE / 2
-        }
-
-
         val APPID = getString(R.string.appid)
+
+        val pocket = hashMapOf<String, Double>()
+        val items = arrayListOf<Fragment>(DustDetailFragment())
+        val dustAdapter = DustFragmentAdapter(this, items, pocket)
+
+        binding.mainViewpager2.apply {
+            adapter = dustAdapter
+            currentItem = (Int.MAX_VALUE / 2) + 1
+        }
 
         val lm = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val isGPSEnabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER)
@@ -61,15 +61,11 @@ class MainActivity : AppCompatActivity() {
                     val location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
                     getLongitude = location?.longitude
                     getLatitude = location?.latitude
-                    Toast.makeText(this, "n $getLatitude , $getLongitude", Toast.LENGTH_SHORT)
-                        .show()
                 }
                 isGPSEnabled -> {
                     val location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER)
                     getLongitude = location?.longitude
                     getLatitude = location?.latitude
-                    Toast.makeText(this, "g $getLatitude , $getLongitude", Toast.LENGTH_SHORT)
-                        .show()
                 }
                 else -> {
                 }
@@ -102,14 +98,13 @@ class MainActivity : AppCompatActivity() {
                         val co = dustResponse.dataList[0].components?.co
                         val so2 = dustResponse.dataList[0].components?.so2
                         val dt = dustResponse.dataList[0].dt
-                        Log.d("checkkk", "condi ${condition}")
-                        Log.d("checkkk", "pm10 ${pm10}")
-                        Log.d("checkkk", "pm25 ${pm2_5}")
-                        Log.d("checkkk", "no2 ${no2}")
-                        Log.d("checkkk", "o3 ${o3}")
-                        Log.d("checkkk", "co ${co}")
-                        Log.d("checkkk", "so2 ${so2}")
-                        Log.d("checkkk", "dt ${dt}")
+                        pocket["pm10"] = pm10!!
+                        pocket["pm2_5"] = pm2_5!!
+                        pocket["no2"] = no2!!
+                        pocket["o3"] = o3!!
+                        pocket["co"] = co!!
+                        pocket["so2"] = so2!!
+                        dustAdapter.notifyDataSetChanged()
                     }
                 }
             }
