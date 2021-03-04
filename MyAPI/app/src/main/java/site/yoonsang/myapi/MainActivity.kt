@@ -1,16 +1,112 @@
 package site.yoonsang.myapi
 
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
+import android.location.LocationManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import site.yoonsang.myapi.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private val BASE_URL = "http://api.openweathermap.org/"
+    private var getLatitude: Double? = null
+    private var getLongitude: Double? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val APPID = getString(R.string.appid)
+
+        val lm = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val isGPSEnabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER)
+        val isNetworkEnabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+
+        if (ContextCompat.checkSelfPermission(
+                applicationContext,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                0
+            )
+        } else {
+            when {
+                isNetworkEnabled -> {
+                    val location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+                    getLongitude = location?.longitude
+                    getLatitude = location?.latitude
+                    Toast.makeText(this, "n $getLatitude , $getLongitude", Toast.LENGTH_SHORT)
+                        .show()
+                }
+                isGPSEnabled -> {
+                    val location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+                    getLongitude = location?.longitude
+                    getLatitude = location?.latitude
+                    Toast.makeText(this, "g $getLatitude , $getLongitude", Toast.LENGTH_SHORT)
+                        .show()
+                }
+                else -> {
+                }
+            }
+        }
+
+        val retrofit = Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val service = retrofit.create(RetrofitService::class.java)
+
+        service.getCurrentDustData(
+            getLatitude!!, getLongitude!!,
+            APPID
+        ).enqueue(object : Callback<DustResponse> {
+            override fun onResponse(
+                call: Call<DustResponse>,
+                response: Response<DustResponse>
+            ) {
+                if (response.isSuccessful) {
+                    val dustResponse = response.body()
+                    if (dustResponse != null) {
+                        val condition = dustResponse.dataList[0].main?.aqi
+                        val pm10 = dustResponse.dataList[0].components?.pm10
+                        val pm2_5 = dustResponse.dataList[0].components?.pm2_5
+                        val no2 = dustResponse.dataList[0].components?.no2
+                        val o3 = dustResponse.dataList[0].components?.o3
+                        val co = dustResponse.dataList[0].components?.co
+                        val so2 = dustResponse.dataList[0].components?.so2
+                        val dt = dustResponse.dataList[0].dt
+                        Log.d("checkkk", "condi ${condition}")
+                        Log.d("checkkk", "pm10 ${pm10}")
+                        Log.d("checkkk", "pm25 ${pm2_5}")
+                        Log.d("checkkk", "no2 ${no2}")
+                        Log.d("checkkk", "o3 ${o3}")
+                        Log.d("checkkk", "co ${co}")
+                        Log.d("checkkk", "so2 ${so2}")
+                        Log.d("checkkk", "dt ${dt}")
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<DustResponse>, t: Throwable) {
+                Log.d("checkkk", "fail ${t.message}")
+            }
+        })
     }
 }

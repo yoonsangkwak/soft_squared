@@ -120,6 +120,7 @@
                         android:textSize="20sp"
                         android:text="공기가 탁하네요. 조심하세요~" />
                 </LinearLayout>
+
             </LinearLayout>
 
         </LinearLayout>

@@ -18,6 +18,7 @@ class DustFragmentOne : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentDustOneBinding.inflate(inflater, container, false)
+
         return binding.root
     }
 
