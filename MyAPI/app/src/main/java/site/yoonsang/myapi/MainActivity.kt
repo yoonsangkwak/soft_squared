@@ -10,6 +10,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -28,6 +29,15 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val items = arrayListOf<Fragment>(
+            DustDetailFragment()
+        )
+        binding.mainViewpager2.apply {
+            adapter = DustFragmentAdapter(context, items)
+            currentItem = Int.MAX_VALUE / 2
+        }
+
 
         val APPID = getString(R.string.appid)
 

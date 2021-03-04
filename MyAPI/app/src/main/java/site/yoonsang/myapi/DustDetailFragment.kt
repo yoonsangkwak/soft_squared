@@ -5,11 +5,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import site.yoonsang.myapi.databinding.FragmentDustTwoBinding
+import site.yoonsang.myapi.databinding.FragmentDustDetailBinding
 
-class DustFragmentTwo : Fragment() {
+class DustDetailFragment : Fragment() {
 
-    private var _binding: FragmentDustTwoBinding? = null
+    private var _binding: FragmentDustDetailBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -17,7 +17,8 @@ class DustFragmentTwo : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentDustTwoBinding.inflate(inflater, container, false)
+        _binding = FragmentDustDetailBinding.inflate(inflater, container, false)
+
         return binding.root
     }
 

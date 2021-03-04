@@ -121,8 +121,14 @@
                         android:text="공기가 탁하네요. 조심하세요~" />
                 </LinearLayout>
 
+
+
             </LinearLayout>
 
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/main_viewpager2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
