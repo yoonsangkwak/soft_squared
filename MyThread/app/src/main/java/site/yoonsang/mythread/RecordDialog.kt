@@ -12,6 +12,7 @@ class RecordDialog(context: Context, private val time: Int) : Dialog(context) {
     private lateinit var listener: RecordOKClickedListener
 
     fun start() {
+        setCancelable(false)
         setCanceledOnTouchOutside(false)
         window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         setContentView(binding.root)
@@ -51,6 +52,4 @@ class RecordDialog(context: Context, private val time: Int) : Dialog(context) {
     interface RecordOKClickedListener {
         fun onOKClicked()
     }
-
-    override fun onBackPressed() {}
 }
