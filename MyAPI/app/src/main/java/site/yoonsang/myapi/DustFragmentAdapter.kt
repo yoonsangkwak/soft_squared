@@ -40,22 +40,20 @@ class DustFragmentAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val index = position % list.size
-        val item = list[index]
         if (position % 2 == 0) {
             holder.nameFirst.text = "미세먼지"
             holder.concFirst.text = "${pocket["pm2_5"]} ㎍/㎥"
             holder.nameSecond.text = "초미세먼지"
             holder.concSecond.text = "${pocket["pm10"]} ㎍/㎥"
             holder.nameThird.text = "이산화질소"
-            holder.concThird.text = "${pocket["no2"]} ㎍/㎥"
+            holder.concThird.text = "${"%.3f".format(pocket["no2"]?.div(1000))} ppm"
         } else {
             holder.nameFirst.text = "오존"
-            holder.concFirst.text = "${pocket["o3"]} ㎍/㎥"
+            holder.concFirst.text = "${"%.3f".format(pocket["o3"]?.div(1000))} ppm"
             holder.nameSecond.text = "일산화탄소"
-            holder.concSecond.text = "${pocket["co"]} ㎍/㎥"
+            holder.concSecond.text = "${"%.3f".format(pocket["co"]?.div(1000))} ppm"
             holder.nameThird.text = "아황산가스"
-            holder.concThird.text = "${pocket["so2"]} ㎍/㎥"
+            holder.concThird.text = "${"%.3f".format(pocket["so2"]?.div(1000))} ppm"
         }
     }
 
