@@ -2,15 +2,15 @@ package site.yoonsang.myapi
 
 import android.Manifest
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.Geocoder
 import android.location.LocationManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -33,6 +33,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val APPID = getString(R.string.appid)
+
+        val geocoder = Geocoder(this)
 
         val pocket = hashMapOf<String, Double>()
         val dustAdapter = DustFragmentAdapter(this, pocket)
@@ -62,11 +64,19 @@ class MainActivity : AppCompatActivity() {
                     val location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
                     getLongitude = location?.longitude
                     getLatitude = location?.latitude
+                    if (getLongitude != null && getLatitude != null) {
+                        val address = geocoder.getFromLocation(getLatitude!!, getLongitude!!, 1)
+                        binding.mainLocation.text = "${address[0].locality} ${address[0].thoroughfare}"
+                    }
                 }
                 isGPSEnabled -> {
                     val location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER)
                     getLongitude = location?.longitude
                     getLatitude = location?.latitude
+                    if (getLongitude != null && getLatitude != null) {
+                        val address = geocoder.getFromLocation(getLatitude!!, getLongitude!!, 1)
+                        binding.mainLocation.text = "${address[0].locality} ${address[0].thoroughfare}"
+                    }
                 }
                 else -> {
                 }
@@ -108,6 +118,37 @@ class MainActivity : AppCompatActivity() {
                             Locale.KOREA
                         ).format(System.currentTimeMillis())
                         binding.mainUploadDate.text = sdf
+                        if (pocket["pm10"] != null) {
+                            if (pocket["pm10"]!! >= 0 && pocket["pm10"]!! < 30) {
+                                binding.mainStatusText.text = "좋음"
+                                binding.mainStatusImage.setImageResource(R.drawable.ic_very_good)
+                                binding.mainRootLayout.setBackgroundResource(R.color.veryGood)
+                                binding.mainViewpager2.setBackgroundResource(R.drawable.detail_very_good_background)
+                                window.statusBarColor = getColor(R.color.statusVeryGood)
+                                binding.mainStatusMessage.text = getString(R.string.veryGood)
+                            } else if (pocket["pm10"]!! >= 39 && pocket["pm10"]!! < 50) {
+                                binding.mainStatusText.text = "보통"
+                                binding.mainStatusImage.setImageResource(R.drawable.ic_good)
+                                binding.mainRootLayout.setBackgroundResource(R.color.good)
+                                binding.mainViewpager2.setBackgroundResource(R.drawable.detail_good_background)
+                                window.statusBarColor = getColor(R.color.statusGood)
+                                binding.mainStatusMessage.text = getString(R.string.good)
+                            } else if (pocket["pm10"]!! >= 50 && pocket["pm10"]!! < 100) {
+                                binding.mainStatusText.text = "나쁨"
+                                binding.mainStatusImage.setImageResource(R.drawable.ic_bad)
+                                binding.mainRootLayout.setBackgroundResource(R.color.bad)
+                                binding.mainViewpager2.setBackgroundResource(R.drawable.detail_bad_background)
+                                window.statusBarColor = getColor(R.color.statusBad)
+                                binding.mainStatusMessage.text = getString(R.string.bad)
+                            } else if (pocket["pm10"]!! >= 100) {
+                                binding.mainStatusText.text = "상당히 나쁨"
+                                binding.mainStatusImage.setImageResource(R.drawable.ic_very_bad)
+                                binding.mainRootLayout.setBackgroundResource(R.color.veryBad)
+                                binding.mainViewpager2.setBackgroundResource(R.drawable.detail_very_bad_background)
+                                window.statusBarColor = getColor(R.color.statusVeryBad)
+                                binding.mainStatusMessage.text = getString(R.string.veryBad)
+                            }
+                        }
                         dustAdapter.notifyDataSetChanged()
                     }
                 }
@@ -117,5 +158,11 @@ class MainActivity : AppCompatActivity() {
                 Log.d("checkkk", "fail ${t.message}")
             }
         })
+
+        binding.mainAdd.setOnClickListener {
+            val intent = Intent(this, FavoriteActivity::class.java)
+            intent.putExtra("here", pocket["pm10"]!!)
+            startActivity(intent)
+        }
     }
 }

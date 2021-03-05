@@ -41,13 +41,13 @@ class DustFragmentAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         if (position % 2 == 0) {
             holder.nameFirst.text = "미세먼지"
-            holder.concFirst.text = "${pocket["pm10"]} ㎍/㎥"
+            holder.concFirst.text = "${pocket["pm10"]?.toInt()} ㎍/㎥"
             if (pocket["pm10"] != null) {
                 if (pocket["pm10"]!! >= 0 && pocket["pm10"]!! < 30) {
                     holder.statusFirst.text = "좋음"
                     holder.imageFirst.setImageResource(R.drawable.ic_very_good)
                 } else if (pocket["pm10"]!! >= 39 && pocket["pm10"]!! < 50) {
-                    holder.statusFirst.text = "양호"
+                    holder.statusFirst.text = "보통"
                     holder.imageFirst.setImageResource(R.drawable.ic_good)
                 } else if (pocket["pm10"]!! >= 50 && pocket["pm10"]!! < 100) {
                     holder.statusFirst.text = "나쁨"
@@ -58,13 +58,13 @@ class DustFragmentAdapter(
                 }
             }
             holder.nameSecond.text = "초미세먼지"
-            holder.concSecond.text = "${pocket["pm2_5"]} ㎍/㎥"
+            holder.concSecond.text = "${pocket["pm2_5"]?.toInt()} ㎍/㎥"
             if (pocket["pm2_5"] != null) {
                 if (pocket["pm2_5"]!! >= 0 && pocket["pm2_5"]!! < 15) {
                     holder.statusSecond.text = "좋음"
                     holder.imageSecond.setImageResource(R.drawable.ic_very_good)
                 } else if (pocket["pm2_5"]!! >= 15 && pocket["pm2_5"]!! < 25) {
-                    holder.statusSecond.text = "양호"
+                    holder.statusSecond.text = "보통"
                     holder.imageSecond.setImageResource(R.drawable.ic_good)
                 } else if (pocket["pm2_5"]!! >= 25 && pocket["pm2_5"]!! < 50) {
                     holder.statusSecond.text = "나쁨"
@@ -81,7 +81,7 @@ class DustFragmentAdapter(
                     holder.statusThird.text = "좋음"
                     holder.imageThird.setImageResource(R.drawable.ic_very_good)
                 } else if (pocket["no2"]!! >= 30 && pocket["no2"]!! < 60) {
-                    holder.statusThird.text = "양호"
+                    holder.statusThird.text = "보통"
                     holder.imageThird.setImageResource(R.drawable.ic_good)
                 } else if (pocket["no2"]!! >= 60 && pocket["no2"]!! < 200) {
                     holder.statusThird.text = "나쁨"
@@ -99,7 +99,7 @@ class DustFragmentAdapter(
                     holder.statusFirst.text = "좋음"
                     holder.imageFirst.setImageResource(R.drawable.ic_very_good)
                 } else if (pocket["o3"]!! >= 30 && pocket["o3"]!! < 90) {
-                    holder.statusFirst.text = "양호"
+                    holder.statusFirst.text = "보통"
                     holder.imageFirst.setImageResource(R.drawable.ic_good)
                 } else if (pocket["o3"]!! >= 90 && pocket["o3"]!! < 150) {
                     holder.statusFirst.text = "나쁨"
@@ -116,7 +116,7 @@ class DustFragmentAdapter(
                     holder.statusSecond.text = "좋음"
                     holder.imageSecond.setImageResource(R.drawable.ic_very_good)
                 } else if (pocket["co"]!! >= 2000 && pocket["co"]!! < 9000) {
-                    holder.statusSecond.text = "양호"
+                    holder.statusSecond.text = "보통"
                     holder.imageSecond.setImageResource(R.drawable.ic_good)
                 } else if (pocket["co"]!! >= 9000 && pocket["co"]!! < 15000) {
                     holder.statusSecond.text = "나쁨"
@@ -133,7 +133,7 @@ class DustFragmentAdapter(
                     holder.statusThird.text = "좋음"
                     holder.imageThird.setImageResource(R.drawable.ic_very_good)
                 } else if (pocket["so2"]!! >= 20 && pocket["so2"]!! < 50) {
-                    holder.statusThird.text = "양호"
+                    holder.statusThird.text = "보통"
                     holder.imageThird.setImageResource(R.drawable.ic_good)
                 } else if (pocket["so2"]!! >= 50 && pocket["so2"]!! < 150) {
                     holder.statusThird.text = "나쁨"
