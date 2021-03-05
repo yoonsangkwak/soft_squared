@@ -17,6 +17,8 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import site.yoonsang.myapi.databinding.ActivityMainBinding
+import java.text.SimpleDateFormat
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -33,8 +35,7 @@ class MainActivity : AppCompatActivity() {
         val APPID = getString(R.string.appid)
 
         val pocket = hashMapOf<String, Double>()
-        val items = arrayListOf<Fragment>(DustDetailFragment())
-        val dustAdapter = DustFragmentAdapter(this, items, pocket)
+        val dustAdapter = DustFragmentAdapter(this, pocket)
 
         binding.mainViewpager2.apply {
             adapter = dustAdapter
@@ -90,20 +91,23 @@ class MainActivity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     val dustResponse = response.body()
                     if (dustResponse != null) {
-                        val condition = dustResponse.dataList[0].main?.aqi
                         val pm10 = dustResponse.dataList[0].components?.pm10
                         val pm2_5 = dustResponse.dataList[0].components?.pm2_5
                         val no2 = dustResponse.dataList[0].components?.no2
                         val o3 = dustResponse.dataList[0].components?.o3
                         val co = dustResponse.dataList[0].components?.co
                         val so2 = dustResponse.dataList[0].components?.so2
-                        val dt = dustResponse.dataList[0].dt
                         pocket["pm10"] = pm10!!
                         pocket["pm2_5"] = pm2_5!!
                         pocket["no2"] = no2!!
                         pocket["o3"] = o3!!
                         pocket["co"] = co!!
                         pocket["so2"] = so2!!
+                        val sdf = SimpleDateFormat(
+                            "yyyy-MM-dd HH:mm",
+                            Locale.KOREA
+                        ).format(System.currentTimeMillis())
+                        binding.mainUploadDate.text = sdf
                         dustAdapter.notifyDataSetChanged()
                     }
                 }

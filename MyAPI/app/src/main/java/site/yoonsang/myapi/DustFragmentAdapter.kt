@@ -10,7 +10,6 @@ import site.yoonsang.myapi.databinding.FragmentDustDetailBinding
 
 class DustFragmentAdapter(
     context: Context,
-    private val list: ArrayList<Fragment>,
     private val pocket: HashMap<String, Double>
 ) :
     RecyclerView.Adapter<DustFragmentAdapter.ViewHolder>() {
