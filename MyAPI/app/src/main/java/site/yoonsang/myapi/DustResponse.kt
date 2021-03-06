@@ -31,3 +31,12 @@ class Components {
     @SerializedName("pm10")
     var pm10: Double = 0.toDouble()
 }
+
+class NaverUserResponse(
+    @SerializedName("response") var response: Response? = null
+)
+
+class Response{
+    @SerializedName("email") var email: String? = null
+    @SerializedName("name") var name: String? = null
+}

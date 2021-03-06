@@ -24,6 +24,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private val BASE_URL = "http://api.openweathermap.org/"
+    private val NAVER_BASE_URL = "https://openapi.naver.com/"
     private var getLatitude: Double? = null
     private var getLongitude: Double? = null
 
@@ -66,7 +67,8 @@ class MainActivity : AppCompatActivity() {
                     getLatitude = location?.latitude
                     if (getLongitude != null && getLatitude != null) {
                         val address = geocoder.getFromLocation(getLatitude!!, getLongitude!!, 1)
-                        binding.mainLocation.text = "${address[0].locality} ${address[0].thoroughfare}"
+                        binding.mainLocation.text =
+                            "${address[0].locality} ${address[0].thoroughfare}"
                         Log.d("checkkk", "${address[0]}")
                     }
                 }
@@ -76,7 +78,8 @@ class MainActivity : AppCompatActivity() {
                     getLatitude = location?.latitude
                     if (getLongitude != null && getLatitude != null) {
                         val address = geocoder.getFromLocation(getLatitude!!, getLongitude!!, 1)
-                        binding.mainLocation.text = "${address[0].locality} ${address[0].thoroughfare}"
+                        binding.mainLocation.text =
+                            "${address[0].locality} ${address[0].thoroughfare}"
                     }
                 }
                 else -> {
@@ -90,6 +93,35 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         val service = retrofit.create(RetrofitService::class.java)
+
+        val naverRetrofit = Retrofit.Builder()
+            .baseUrl(NAVER_BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val naverService = naverRetrofit.create(RetrofitService::class.java)
+
+        naverService.getNaverUserInfo(intent.getStringExtra("accessToken")!!)
+            .enqueue(object : Callback<NaverUserResponse> {
+                override fun onResponse(
+                    call: Call<NaverUserResponse>,
+                    response: Response<NaverUserResponse>
+                ) {
+                    if (response.isSuccessful) {
+                        val naverResponse = response.body()
+                        if (naverResponse != null) {
+                            val email = naverResponse.response?.email
+                            val name = naverResponse.response?.name
+                            Log.d("checkkk", "naver $email")
+                            Log.d("checkkk", "naver $name")
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<NaverUserResponse>, t: Throwable) {
+                    Log.d("checkkk", "fail naver ${t.message}")
+                }
+            })
 
         service.getCurrentDustData(
             getLatitude!!, getLongitude!!,
