@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.kakao.sdk.user.UserApiClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -37,8 +38,8 @@ class MainActivity : AppCompatActivity() {
 
         val geocoder = Geocoder(this)
 
-        val pocket = hashMapOf<String, Double>()
-        val dustAdapter = DustFragmentAdapter(this, pocket)
+        val dustConcentration = hashMapOf<String, Double>()
+        val dustAdapter = DustFragmentAdapter(this, dustConcentration)
 
         binding.mainViewpager2.apply {
             adapter = dustAdapter
@@ -94,34 +95,36 @@ class MainActivity : AppCompatActivity() {
 
         val service = retrofit.create(RetrofitService::class.java)
 
-        val naverRetrofit = Retrofit.Builder()
-            .baseUrl(NAVER_BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+        if (intent.getStringExtra("sort") == "naver") {
+            val naverRetrofit = Retrofit.Builder()
+                .baseUrl(NAVER_BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
 
-        val naverService = naverRetrofit.create(RetrofitService::class.java)
+            val naverService = naverRetrofit.create(RetrofitService::class.java)
 
-        naverService.getNaverUserInfo(intent.getStringExtra("accessToken")!!)
-            .enqueue(object : Callback<NaverUserResponse> {
-                override fun onResponse(
-                    call: Call<NaverUserResponse>,
-                    response: Response<NaverUserResponse>
-                ) {
-                    if (response.isSuccessful) {
-                        val naverResponse = response.body()
-                        if (naverResponse != null) {
-                            val email = naverResponse.response?.email
-                            val name = naverResponse.response?.name
-                            Log.d("checkkk", "naver $email")
-                            Log.d("checkkk", "naver $name")
+            naverService.getNaverUserInfo(intent.getStringExtra("accessToken")!!)
+                .enqueue(object : Callback<NaverUserResponse> {
+                    override fun onResponse(
+                        call: Call<NaverUserResponse>,
+                        response: Response<NaverUserResponse>
+                    ) {
+                        if (response.isSuccessful) {
+                            val naverResponse = response.body()
+                            if (naverResponse != null) {
+                                val email = naverResponse.response?.email
+                                val name = naverResponse.response?.name
+                                Log.d("checkkk", "naver $email")
+                                Log.d("checkkk", "naver $name")
+                            }
                         }
                     }
-                }
 
-                override fun onFailure(call: Call<NaverUserResponse>, t: Throwable) {
-                    Log.d("checkkk", "fail naver ${t.message}")
-                }
-            })
+                    override fun onFailure(call: Call<NaverUserResponse>, t: Throwable) {
+                        Log.d("checkkk", "fail naver ${t.message}")
+                    }
+                })
+        }
 
         service.getCurrentDustData(
             getLatitude!!, getLongitude!!,
@@ -140,40 +143,40 @@ class MainActivity : AppCompatActivity() {
                         val o3 = dustResponse.dataList[0].components?.o3
                         val co = dustResponse.dataList[0].components?.co
                         val so2 = dustResponse.dataList[0].components?.so2
-                        pocket["pm10"] = pm10!!
-                        pocket["pm2_5"] = pm2_5!!
-                        pocket["no2"] = no2!!
-                        pocket["o3"] = o3!!
-                        pocket["co"] = co!!
-                        pocket["so2"] = so2!!
+                        dustConcentration["pm10"] = pm10!!
+                        dustConcentration["pm2_5"] = pm2_5!!
+                        dustConcentration["no2"] = no2!!
+                        dustConcentration["o3"] = o3!!
+                        dustConcentration["co"] = co!!
+                        dustConcentration["so2"] = so2!!
                         val sdf = SimpleDateFormat(
                             "yyyy-MM-dd HH:mm",
                             Locale.KOREA
                         ).format(System.currentTimeMillis())
                         binding.mainUploadDate.text = sdf
-                        if (pocket["pm10"] != null) {
-                            if (pocket["pm10"]!! >= 0 && pocket["pm10"]!! < 30) {
+                        if (dustConcentration["pm10"] != null) {
+                            if (dustConcentration["pm10"]!! >= 0 && dustConcentration["pm10"]!! < 30) {
                                 binding.mainStatusText.text = "좋음"
                                 binding.mainStatusImage.setImageResource(R.drawable.ic_very_good)
                                 binding.mainRootLayout.setBackgroundResource(R.color.veryGood)
                                 binding.mainViewpager2.setBackgroundResource(R.drawable.detail_very_good_background)
                                 window.statusBarColor = getColor(R.color.statusVeryGood)
                                 binding.mainStatusMessage.text = getString(R.string.veryGood)
-                            } else if (pocket["pm10"]!! >= 39 && pocket["pm10"]!! < 50) {
+                            } else if (dustConcentration["pm10"]!! >= 39 && dustConcentration["pm10"]!! < 50) {
                                 binding.mainStatusText.text = "보통"
                                 binding.mainStatusImage.setImageResource(R.drawable.ic_good)
                                 binding.mainRootLayout.setBackgroundResource(R.color.good)
                                 binding.mainViewpager2.setBackgroundResource(R.drawable.detail_good_background)
                                 window.statusBarColor = getColor(R.color.statusGood)
                                 binding.mainStatusMessage.text = getString(R.string.good)
-                            } else if (pocket["pm10"]!! >= 50 && pocket["pm10"]!! < 100) {
+                            } else if (dustConcentration["pm10"]!! >= 50 && dustConcentration["pm10"]!! < 100) {
                                 binding.mainStatusText.text = "나쁨"
                                 binding.mainStatusImage.setImageResource(R.drawable.ic_bad)
                                 binding.mainRootLayout.setBackgroundResource(R.color.bad)
                                 binding.mainViewpager2.setBackgroundResource(R.drawable.detail_bad_background)
                                 window.statusBarColor = getColor(R.color.statusBad)
                                 binding.mainStatusMessage.text = getString(R.string.bad)
-                            } else if (pocket["pm10"]!! >= 100) {
+                            } else if (dustConcentration["pm10"]!! >= 100) {
                                 binding.mainStatusText.text = "상당히 나쁨"
                                 binding.mainStatusImage.setImageResource(R.drawable.ic_very_bad)
                                 binding.mainRootLayout.setBackgroundResource(R.color.veryBad)
@@ -192,9 +195,16 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
+        if (intent.getStringExtra("sort") == "kakao") {
+            UserApiClient.instance.me { user, error ->
+                Log.d("checkkk", "kakao ${user?.kakaoAccount?.email}")
+                Log.d("checkkk", "kakao ${user?.kakaoAccount?.profile?.nickname}")
+            }
+        }
+
         binding.mainAdd.setOnClickListener {
             val intent = Intent(this, FavoriteActivity::class.java)
-            intent.putExtra("here", pocket["pm10"]!!)
+            intent.putExtra("here", dustConcentration["pm10"]!!)
             startActivity(intent)
         }
     }

@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
+        android:name=".GlobalApplication"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -22,8 +23,15 @@
         </activity>
         <activity android:name=".SearchActivity" />
         <activity android:name=".FavoriteActivity" />
-        <activity android:name=".MainActivity">
-
+        <activity android:name=".MainActivity" />
+        <activity android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:host="oauth"
+                    android:scheme="kakaoda08ea798f0f81add4c98001764ef3e2" />
+            </intent-filter>
         </activity>
     </application>
 
