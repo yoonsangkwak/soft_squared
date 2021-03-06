@@ -67,6 +67,7 @@ class MainActivity : AppCompatActivity() {
                     if (getLongitude != null && getLatitude != null) {
                         val address = geocoder.getFromLocation(getLatitude!!, getLongitude!!, 1)
                         binding.mainLocation.text = "${address[0].locality} ${address[0].thoroughfare}"
+                        Log.d("checkkk", "${address[0]}")
                     }
                 }
                 isGPSEnabled -> {
