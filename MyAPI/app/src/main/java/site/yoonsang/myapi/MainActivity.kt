@@ -8,20 +8,24 @@ import android.location.Geocoder
 import android.location.LocationManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.UserManager
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import com.google.android.material.navigation.NavigationView
 import com.kakao.sdk.user.UserApiClient
+import com.nhn.android.naverlogin.OAuthLogin
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import site.yoonsang.myapi.databinding.ActivityMainBinding
+import site.yoonsang.myapi.databinding.NaviHeaderBinding
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
@@ -45,9 +49,31 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_menu)
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
+        val headerView = binding.navView.getHeaderView(0)
+        val headerBinding = NaviHeaderBinding.bind(headerView)
+
         binding.navView.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.nav_logout -> Log.d("checkkk", "2")
+                R.id.nav_logout -> {
+                    if (intent.getStringExtra("sort") == "naver") {
+                        val mOAuthLoginModule = OAuthLogin.getInstance()
+                        mOAuthLoginModule.logout(this)
+                        val intent = Intent(this, LoginActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                    } else if (intent.getStringExtra("sort") == "kakao") {
+                        UserApiClient.instance.logout { error ->
+                            if (error != null) {
+                                Log.d("checkkk", "로그아웃 실패. SDK에서 토큰 삭제됨", error)
+                            } else {
+                                Log.d("checkkk", "로그아웃 성공. SDK에서 토큰 삭제됨")
+                                val intent = Intent(this, LoginActivity::class.java)
+                                startActivity(intent)
+                                finish()
+                            }
+                        }
+                    }
+                }
             }
             false
         }
@@ -132,8 +158,9 @@ class MainActivity : AppCompatActivity() {
                             if (naverResponse != null) {
                                 val email = naverResponse.response?.email
                                 val name = naverResponse.response?.name
-                                Log.d("checkkk", "naver $email")
-                                Log.d("checkkk", "naver $name")
+                                headerBinding.navName.text = name
+                                headerBinding.navEmail.text = email
+                                headerBinding.navSort.text = "네이버"
                             }
                         }
                     }
@@ -215,8 +242,9 @@ class MainActivity : AppCompatActivity() {
 
         if (intent.getStringExtra("sort") == "kakao") {
             UserApiClient.instance.me { user, error ->
-                Log.d("checkkk", "kakao ${user?.kakaoAccount?.email}")
-                Log.d("checkkk", "kakao ${user?.kakaoAccount?.profile?.nickname}")
+                headerBinding.navName.text = user?.kakaoAccount?.profile?.nickname
+                headerBinding.navEmail.text = user?.kakaoAccount?.email
+                headerBinding.navSort.text = "카카오"
             }
         }
     }

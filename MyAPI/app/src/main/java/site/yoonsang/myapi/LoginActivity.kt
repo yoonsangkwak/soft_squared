@@ -38,16 +38,10 @@ class LoginActivity : AppCompatActivity() {
                 override fun run(success: Boolean) {
                     if (success) {
                         val accessToken = mOAuthLoginModule.getAccessToken(this@LoginActivity)
-                        val refreshToken = mOAuthLoginModule.getRefreshToken(this@LoginActivity)
-                        val expiresAt = mOAuthLoginModule.getExpiresAt(this@LoginActivity)
-                        val tokenType = mOAuthLoginModule.getTokenType(this@LoginActivity)
-                        Log.d("checkkk", accessToken)
-                        Log.d("checkkk", refreshToken)
-                        Log.d("checkkk", "$expiresAt")
-                        Log.d("checkkk", tokenType)
                         intent.putExtra("sort", "naver")
                         intent.putExtra("accessToken", "Bearer $accessToken")
                         startActivity(intent)
+                        finish()
                     } else {
                         val errorCode = mOAuthLoginModule.getLastErrorCode(this@LoginActivity).code
                         val errorDesc = mOAuthLoginModule.getLastErrorDesc(this@LoginActivity)
@@ -67,7 +61,14 @@ class LoginActivity : AppCompatActivity() {
                 } else if (token != null) {
                     intent.putExtra("sort", "kakao")
                     startActivity(intent)
+                    finish()
                 }
+            }
+
+            if (UserApiClient.instance.isKakaoTalkLoginAvailable(this)) {
+                UserApiClient.instance.loginWithKakaoTalk(this, callback = callback)
+            } else {
+                UserApiClient.instance.loginWithKakaoAccount(this, callback = callback)
             }
 
             UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
@@ -76,12 +77,7 @@ class LoginActivity : AppCompatActivity() {
                 } else if (tokenInfo != null) {
                     intent.putExtra("sort", "kakao")
                     startActivity(intent)
-                } else {
-                    if (UserApiClient.instance.isKakaoTalkLoginAvailable(this)) {
-                        UserApiClient.instance.loginWithKakaoTalk(this, callback = callback)
-                    } else {
-                        UserApiClient.instance.loginWithKakaoAccount(this, callback = callback)
-                    }
+                    finish()
                 }
             }
         }
