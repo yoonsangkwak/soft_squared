@@ -37,12 +37,15 @@ class MainActivity : AppCompatActivity() {
     private val NAVER_BASE_URL = "https://openapi.naver.com/"
     private var getLatitude: Double? = null
     private var getLongitude: Double? = null
+    private lateinit var APPID: String
     private lateinit var dustConcentration: HashMap<String, Double>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        APPID = getString(R.string.appid)
 
         setSupportActionBar(binding.mainToolBar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -51,6 +54,21 @@ class MainActivity : AppCompatActivity() {
 
         val headerView = binding.navView.getHeaderView(0)
         val headerBinding = NaviHeaderBinding.bind(headerView)
+
+        dustConcentration = hashMapOf()
+        val dustAdapter = DustFragmentAdapter(this, dustConcentration)
+
+        binding.mainViewpager2.apply {
+            adapter = dustAdapter
+            currentItem = (Int.MAX_VALUE / 2) + 1
+        }
+
+        binding.mainSwipeRefresh.setOnRefreshListener {
+            refreshData(dustAdapter)
+            binding.mainSwipeRefresh.isRefreshing = false
+        }
+
+        refreshData(dustAdapter)
 
         binding.navView.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
@@ -77,67 +95,6 @@ class MainActivity : AppCompatActivity() {
             }
             false
         }
-
-        val APPID = getString(R.string.appid)
-
-        val geocoder = Geocoder(this)
-
-        dustConcentration = hashMapOf()
-        val dustAdapter = DustFragmentAdapter(this, dustConcentration)
-
-        binding.mainViewpager2.apply {
-            adapter = dustAdapter
-            currentItem = (Int.MAX_VALUE / 2) + 1
-        }
-
-        val lm = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        val isGPSEnabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER)
-        val isNetworkEnabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
-
-        if (ContextCompat.checkSelfPermission(
-                applicationContext,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                0
-            )
-        } else {
-            when {
-                isNetworkEnabled -> {
-                    val location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-                    getLongitude = location?.longitude
-                    getLatitude = location?.latitude
-                    if (getLongitude != null && getLatitude != null) {
-                        val address = geocoder.getFromLocation(getLatitude!!, getLongitude!!, 1)
-                        binding.mainLocation.text =
-                            "${address[0].locality} ${address[0].thoroughfare}"
-                        Log.d("checkkk", "${address[0]}")
-                    }
-                }
-                isGPSEnabled -> {
-                    val location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-                    getLongitude = location?.longitude
-                    getLatitude = location?.latitude
-                    if (getLongitude != null && getLatitude != null) {
-                        val address = geocoder.getFromLocation(getLatitude!!, getLongitude!!, 1)
-                        binding.mainLocation.text =
-                            "${address[0].locality} ${address[0].thoroughfare}"
-                    }
-                }
-                else -> {
-                }
-            }
-        }
-
-        val retrofit = Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        val service = retrofit.create(RetrofitService::class.java)
 
         if (intent.getStringExtra("sort") == "naver") {
             val naverRetrofit = Retrofit.Builder()
@@ -170,6 +127,92 @@ class MainActivity : AppCompatActivity() {
                     }
                 })
         }
+
+        if (intent.getStringExtra("sort") == "kakao") {
+            UserApiClient.instance.me { user, error ->
+                headerBinding.navName.text = user?.kakaoAccount?.profile?.nickname
+                headerBinding.navEmail.text = user?.kakaoAccount?.email
+                headerBinding.navSort.text = "카카오"
+            }
+        }
+    }
+
+    override fun onBackPressed() {
+        if (binding.mainDrawer.isDrawerOpen(GravityCompat.START)) {
+            binding.mainDrawer.closeDrawer(GravityCompat.START)
+        } else {
+            super.onBackPressed()
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                binding.mainDrawer.openDrawer(GravityCompat.START)
+            }
+            R.id.menu_add -> {
+                val intent = Intent(this, FavoriteActivity::class.java)
+                intent.putExtra("here", dustConcentration["pm10"])
+                startActivity(intent)
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.toolbar_menu, menu)
+        return true
+    }
+
+    private fun refreshData(dustAdapter: DustFragmentAdapter) {
+        val geocoder = Geocoder(this)
+        val lm = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val isGPSEnabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER)
+        val isNetworkEnabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+
+        if (ContextCompat.checkSelfPermission(
+                applicationContext,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                0
+            )
+        } else {
+            when {
+                isNetworkEnabled -> {
+                    val location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+                    getLongitude = location?.longitude
+                    getLatitude = location?.latitude
+                    if (getLongitude != null && getLatitude != null) {
+                        val address = geocoder.getFromLocation(getLatitude!!, getLongitude!!, 1)
+                        binding.mainLocation.text =
+                            "${address[0].locality} ${address[0].thoroughfare}"
+                    }
+                }
+                isGPSEnabled -> {
+                    val location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+                    getLongitude = location?.longitude
+                    getLatitude = location?.latitude
+                    if (getLongitude != null && getLatitude != null) {
+                        val address = geocoder.getFromLocation(getLatitude!!, getLongitude!!, 1)
+                        binding.mainLocation.text =
+                            "${address[0].locality} ${address[0].thoroughfare}"
+                    }
+                }
+                else -> {
+                }
+            }
+        }
+
+        val retrofit = Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val service = retrofit.create(RetrofitService::class.java)
 
         service.getCurrentDustData(
             getLatitude!!, getLongitude!!,
@@ -239,40 +282,5 @@ class MainActivity : AppCompatActivity() {
                 Log.d("checkkk", "fail ${t.message}")
             }
         })
-
-        if (intent.getStringExtra("sort") == "kakao") {
-            UserApiClient.instance.me { user, error ->
-                headerBinding.navName.text = user?.kakaoAccount?.profile?.nickname
-                headerBinding.navEmail.text = user?.kakaoAccount?.email
-                headerBinding.navSort.text = "카카오"
-            }
-        }
-    }
-
-    override fun onBackPressed() {
-        if (binding.mainDrawer.isDrawerOpen(GravityCompat.START)) {
-            binding.mainDrawer.closeDrawer(GravityCompat.START)
-        } else {
-            super.onBackPressed()
-        }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> {
-                binding.mainDrawer.openDrawer(GravityCompat.START)
-            }
-            R.id.menu_add -> {
-                val intent = Intent(this, FavoriteActivity::class.java)
-                intent.putExtra("here", dustConcentration["pm10"])
-                startActivity(intent)
-            }
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.toolbar_menu, menu)
-        return true
     }
 }

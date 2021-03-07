@@ -56,4 +56,6 @@ dependencies {
     implementation 'com.naver.nid:naveridlogin-android-sdk:4.2.6'
 
     implementation "com.kakao.sdk:v2-user:2.4.0"
+
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 }

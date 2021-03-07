@@ -6,13 +6,28 @@ import android.location.Geocoder
 import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import site.yoonsang.myapi.databinding.ActivitySearchBinding
+import site.yoonsang.myapi.databinding.ItemSearchLocationBinding
 import java.io.IOException
 
 class SearchActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySearchBinding
+    private val KAKAO_BASE_URL = "https://dapi.kakao.com/"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,32 +35,93 @@ class SearchActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.searchClose.setOnClickListener {
-            val searchLocation = binding.searchEditText.text.toString()
-            getLocation(this, searchLocation)
+            binding.searchEditText.setText("")
         }
+
+        binding.searchEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                getLocation(s.toString())
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+            }
+        })
     }
 
-    private fun getLocation(context: Context, str: String): Location {
-        val location = Location("")
-        val geocoder = Geocoder(context)
-        var addresses: List<Address>? = null
+    private fun getLocation(address: String) {
+        val retrofit = Retrofit.Builder()
+            .baseUrl(KAKAO_BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
 
-        try {
-            addresses = geocoder.getFromLocationName(str, 10)
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-        if (addresses != null) {
-            val address: Address = addresses[0]
-            location.latitude = address.latitude
-            location.longitude = address.longitude
-            Log.d("checkkk", "${addresses.size}")
-            Log.d("checkkk", "${address.locality}")
-            Log.d("checkkk", "${address.thoroughfare}")
-            Log.d("checkkk", "${location.latitude}")
-            Log.d("checkkk", "${location.longitude}")
-        }
+        val service = retrofit.create(RetrofitService::class.java)
+        val restAPIKey = getString(R.string.kakao_rest_key)
 
-        return location
+        service.getAddressData(address, restAPIKey).enqueue(object : Callback<AddressResponse> {
+            override fun onResponse(
+                call: Call<AddressResponse>,
+                response: Response<AddressResponse>
+            ) {
+                if (response.isSuccessful) {
+                    val kakaoResponse = response.body()
+                    if (kakaoResponse != null) {
+                        if (kakaoResponse.documents.size > 0) {
+                            val addressName = kakaoResponse.documents[0].addressName
+                            val x = kakaoResponse.documents[0].x
+                            val y = kakaoResponse.documents[0].y
+                            val locationAdapter =
+                                LocationAdapter(this@SearchActivity, kakaoResponse.documents)
+                            binding.searchLocationRecyclerView.apply {
+                                layoutManager = LinearLayoutManager(context)
+                                adapter = locationAdapter
+                            }
+                            binding.searchLocationRecyclerView.adapter?.notifyDataSetChanged()
+                            Log.d("checkkk", "${kakaoResponse.documents.size}")
+                            Log.d("checkkk", "$addressName")
+                            Log.d("checkkk", "$x")
+                            Log.d("checkkk", "$y")
+                        }
+                    } else {
+                        Log.d("checkkk", "??")
+                    }
+                } else {
+                    Log.d("checkkk", "mm")
+                    Log.d("checkkk", "${response.code()}")
+                    Log.d("checkkk", response.message())
+                }
+            }
+
+            override fun onFailure(call: Call<AddressResponse>, t: Throwable) {
+                Log.d("checkkk", "fail kakao ${t.message}")
+            }
+        })
     }
+}
+
+class LocationAdapter(
+    context: Context,
+    private val list: ArrayList<Documents>
+) : RecyclerView.Adapter<LocationAdapter.ViewHolder>() {
+
+    private val inflater =
+        context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+    lateinit var binding: ItemSearchLocationBinding
+
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val addressName: TextView = binding.itemSearchLocationName
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        binding = ItemSearchLocationBinding.inflate(inflater, parent, false)
+        return ViewHolder(binding.root)
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.addressName.text = list[position].addressName
+    }
+
+    override fun getItemCount(): Int = list.size
 }

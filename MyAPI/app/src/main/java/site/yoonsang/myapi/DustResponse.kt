@@ -40,3 +40,14 @@ class Response{
     @SerializedName("email") var email: String? = null
     @SerializedName("name") var name: String? = null
 }
+
+class AddressResponse(
+    @SerializedName("documents") var documents: ArrayList<Documents> = ArrayList()
+)
+
+class Documents{
+    @SerializedName("address_name") var addressName: String? = null
+    @SerializedName("x") var x: String? = null
+    @SerializedName("y") var y: String? = null
+}
+

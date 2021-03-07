@@ -18,4 +18,10 @@ interface RetrofitService {
     fun getNaverUserInfo(
         @Header("Authorization") authorization: String
     ): Call<NaverUserResponse>
+
+    @GET("/v2/local/search/address.json")
+    fun getAddressData(
+        @Query("query") address: String,
+        @Header("Authorization") authorization: String
+    ): Call<AddressResponse>
 }
