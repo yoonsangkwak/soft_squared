@@ -9,8 +9,12 @@ import android.location.LocationManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.GravityCompat
+import com.google.android.material.navigation.NavigationView
 import com.kakao.sdk.user.UserApiClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -20,6 +24,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import site.yoonsang.myapi.databinding.ActivityMainBinding
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.HashMap
 
 class MainActivity : AppCompatActivity() {
 
@@ -28,17 +33,30 @@ class MainActivity : AppCompatActivity() {
     private val NAVER_BASE_URL = "https://openapi.naver.com/"
     private var getLatitude: Double? = null
     private var getLongitude: Double? = null
+    private lateinit var dustConcentration: HashMap<String, Double>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setSupportActionBar(binding.mainToolBar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_menu)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+
+        binding.navView.setNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_logout -> Log.d("checkkk", "2")
+            }
+            false
+        }
+
         val APPID = getString(R.string.appid)
 
         val geocoder = Geocoder(this)
 
-        val dustConcentration = hashMapOf<String, Double>()
+        dustConcentration = hashMapOf()
         val dustAdapter = DustFragmentAdapter(this, dustConcentration)
 
         binding.mainViewpager2.apply {
@@ -150,7 +168,7 @@ class MainActivity : AppCompatActivity() {
                         dustConcentration["co"] = co!!
                         dustConcentration["so2"] = so2!!
                         val sdf = SimpleDateFormat(
-                            "yyyy-MM-dd HH:mm",
+                            "yyyy-MM-dd a h:mm",
                             Locale.KOREA
                         ).format(System.currentTimeMillis())
                         binding.mainUploadDate.text = sdf
@@ -201,11 +219,32 @@ class MainActivity : AppCompatActivity() {
                 Log.d("checkkk", "kakao ${user?.kakaoAccount?.profile?.nickname}")
             }
         }
+    }
 
-        binding.mainAdd.setOnClickListener {
-            val intent = Intent(this, FavoriteActivity::class.java)
-            intent.putExtra("here", dustConcentration["pm10"]!!)
-            startActivity(intent)
+    override fun onBackPressed() {
+        if (binding.mainDrawer.isDrawerOpen(GravityCompat.START)) {
+            binding.mainDrawer.closeDrawer(GravityCompat.START)
+        } else {
+            super.onBackPressed()
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                binding.mainDrawer.openDrawer(GravityCompat.START)
+            }
+            R.id.menu_add -> {
+                val intent = Intent(this, FavoriteActivity::class.java)
+                intent.putExtra("here", dustConcentration["pm10"])
+                startActivity(intent)
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.toolbar_menu, menu)
+        return true
     }
 }
