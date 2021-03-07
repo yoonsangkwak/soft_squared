@@ -9,8 +9,8 @@ interface RetrofitService {
 
     @GET("/data/2.5/air_pollution")
     fun getCurrentDustData(
-        @Query("lat") lat: Double,
-        @Query("lon") lon: Double,
+        @Query("lat") lat: String,
+        @Query("lon") lon: String,
         @Query("appid") appid: String
     ): Call<DustResponse>
 
@@ -22,6 +22,13 @@ interface RetrofitService {
     @GET("/v2/local/search/address.json")
     fun getAddressData(
         @Query("query") address: String,
+        @Header("Authorization") authorization: String
+    ): Call<AddressResponse>
+
+    @GET("/v2/local/geo/coord2regioncode.json")
+    fun getAddressName(
+        @Query("x") x: String,
+        @Query("y") y: String,
         @Header("Authorization") authorization: String
     ): Call<AddressResponse>
 }

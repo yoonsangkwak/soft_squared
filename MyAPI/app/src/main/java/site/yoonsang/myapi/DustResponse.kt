@@ -50,4 +50,3 @@ class Documents{
     @SerializedName("x") var x: String? = null
     @SerializedName("y") var y: String? = null
 }
-

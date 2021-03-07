@@ -45,6 +45,42 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val lm = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val isGPSEnabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER)
+        val isNetworkEnabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+
+        if (ContextCompat.checkSelfPermission(
+                applicationContext,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                0
+            )
+        } else {
+            when {
+                isNetworkEnabled -> {
+                    val location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+                    getLongitude = location?.longitude
+                    getLatitude = location?.latitude
+                }
+                isGPSEnabled -> {
+                    val location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+                    getLongitude = location?.longitude
+                    getLatitude = location?.latitude
+                }
+            }
+        }
+
+        val helper = DBHelper(this, DB_NAME, DB_VERSION)
+
+        if (helper.selectData().size == 0) {
+            helper.insertData(LocationInfo(getLatitude.toString(), getLongitude.toString()))
+        }
+
+        binding.viewpager.adapter = MainAdapter(this, helper.selectData())
         APPID = getString(R.string.appid)
 
         setSupportActionBar(binding.mainToolBar)
@@ -56,19 +92,19 @@ class MainActivity : AppCompatActivity() {
         val headerBinding = NaviHeaderBinding.bind(headerView)
 
         dustConcentration = hashMapOf()
-        val dustAdapter = DustFragmentAdapter(this, dustConcentration)
+//        val dustAdapter = DustFragmentAdapter(this, dustConcentration)
 
-        binding.mainViewpager2.apply {
-            adapter = dustAdapter
-            currentItem = (Int.MAX_VALUE / 2) + 1
-        }
-
-        binding.mainSwipeRefresh.setOnRefreshListener {
-            refreshData(dustAdapter)
-            binding.mainSwipeRefresh.isRefreshing = false
-        }
-
-        refreshData(dustAdapter)
+//        binding.mainViewpager2.apply {
+//            adapter = dustAdapter
+//            currentItem = (Int.MAX_VALUE / 2) + 1
+//        }
+//
+//        binding.mainSwipeRefresh.setOnRefreshListener {
+//            refreshData(dustAdapter)
+//            binding.mainSwipeRefresh.isRefreshing = false
+//        }
+//
+//        refreshData(dustAdapter)
 
         binding.navView.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
@@ -137,6 +173,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        binding.viewpager.adapter?.notifyDataSetChanged()
+    }
+
     override fun onBackPressed() {
         if (binding.mainDrawer.isDrawerOpen(GravityCompat.START)) {
             binding.mainDrawer.closeDrawer(GravityCompat.START)
@@ -153,6 +194,7 @@ class MainActivity : AppCompatActivity() {
             R.id.menu_add -> {
                 val intent = Intent(this, FavoriteActivity::class.java)
                 intent.putExtra("here", dustConcentration["pm10"])
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
                 startActivity(intent)
             }
         }
@@ -164,123 +206,74 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    private fun refreshData(dustAdapter: DustFragmentAdapter) {
-        val geocoder = Geocoder(this)
-        val lm = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        val isGPSEnabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER)
-        val isNetworkEnabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
-
-        if (ContextCompat.checkSelfPermission(
-                applicationContext,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                0
-            )
-        } else {
-            when {
-                isNetworkEnabled -> {
-                    val location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-                    getLongitude = location?.longitude
-                    getLatitude = location?.latitude
-                    if (getLongitude != null && getLatitude != null) {
-                        val address = geocoder.getFromLocation(getLatitude!!, getLongitude!!, 1)
-                        binding.mainLocation.text =
-                            "${address[0].locality} ${address[0].thoroughfare}"
-                    }
-                }
-                isGPSEnabled -> {
-                    val location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-                    getLongitude = location?.longitude
-                    getLatitude = location?.latitude
-                    if (getLongitude != null && getLatitude != null) {
-                        val address = geocoder.getFromLocation(getLatitude!!, getLongitude!!, 1)
-                        binding.mainLocation.text =
-                            "${address[0].locality} ${address[0].thoroughfare}"
-                    }
-                }
-                else -> {
-                }
-            }
-        }
-
-        val retrofit = Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        val service = retrofit.create(RetrofitService::class.java)
-
-        service.getCurrentDustData(
-            getLatitude!!, getLongitude!!,
-            APPID
-        ).enqueue(object : Callback<DustResponse> {
-            override fun onResponse(
-                call: Call<DustResponse>,
-                response: Response<DustResponse>
-            ) {
-                if (response.isSuccessful) {
-                    val dustResponse = response.body()
-                    if (dustResponse != null) {
-                        val pm10 = dustResponse.dataList[0].components?.pm10
-                        val pm2_5 = dustResponse.dataList[0].components?.pm2_5
-                        val no2 = dustResponse.dataList[0].components?.no2
-                        val o3 = dustResponse.dataList[0].components?.o3
-                        val co = dustResponse.dataList[0].components?.co
-                        val so2 = dustResponse.dataList[0].components?.so2
-                        dustConcentration["pm10"] = pm10!!
-                        dustConcentration["pm2_5"] = pm2_5!!
-                        dustConcentration["no2"] = no2!!
-                        dustConcentration["o3"] = o3!!
-                        dustConcentration["co"] = co!!
-                        dustConcentration["so2"] = so2!!
-                        val sdf = SimpleDateFormat(
-                            "yyyy-MM-dd a h:mm",
-                            Locale.KOREA
-                        ).format(System.currentTimeMillis())
-                        binding.mainUploadDate.text = sdf
-                        if (dustConcentration["pm10"] != null) {
-                            if (dustConcentration["pm10"]!! >= 0 && dustConcentration["pm10"]!! < 30) {
-                                binding.mainStatusText.text = "좋음"
-                                binding.mainStatusImage.setImageResource(R.drawable.ic_very_good)
-                                binding.mainRootLayout.setBackgroundResource(R.color.veryGood)
-                                binding.mainViewpager2.setBackgroundResource(R.drawable.detail_very_good_background)
-                                window.statusBarColor = getColor(R.color.statusVeryGood)
-                                binding.mainStatusMessage.text = getString(R.string.veryGood)
-                            } else if (dustConcentration["pm10"]!! >= 39 && dustConcentration["pm10"]!! < 50) {
-                                binding.mainStatusText.text = "보통"
-                                binding.mainStatusImage.setImageResource(R.drawable.ic_good)
-                                binding.mainRootLayout.setBackgroundResource(R.color.good)
-                                binding.mainViewpager2.setBackgroundResource(R.drawable.detail_good_background)
-                                window.statusBarColor = getColor(R.color.statusGood)
-                                binding.mainStatusMessage.text = getString(R.string.good)
-                            } else if (dustConcentration["pm10"]!! >= 50 && dustConcentration["pm10"]!! < 100) {
-                                binding.mainStatusText.text = "나쁨"
-                                binding.mainStatusImage.setImageResource(R.drawable.ic_bad)
-                                binding.mainRootLayout.setBackgroundResource(R.color.bad)
-                                binding.mainViewpager2.setBackgroundResource(R.drawable.detail_bad_background)
-                                window.statusBarColor = getColor(R.color.statusBad)
-                                binding.mainStatusMessage.text = getString(R.string.bad)
-                            } else if (dustConcentration["pm10"]!! >= 100) {
-                                binding.mainStatusText.text = "상당히 나쁨"
-                                binding.mainStatusImage.setImageResource(R.drawable.ic_very_bad)
-                                binding.mainRootLayout.setBackgroundResource(R.color.veryBad)
-                                binding.mainViewpager2.setBackgroundResource(R.drawable.detail_very_bad_background)
-                                window.statusBarColor = getColor(R.color.statusVeryBad)
-                                binding.mainStatusMessage.text = getString(R.string.veryBad)
-                            }
-                        }
-                        dustAdapter.notifyDataSetChanged()
-                    }
-                }
-            }
-
-            override fun onFailure(call: Call<DustResponse>, t: Throwable) {
-                Log.d("checkkk", "fail ${t.message}")
-            }
-        })
-    }
+//    private fun refreshData(dustAdapter: DustFragmentAdapter) {
+//        val lm = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+//        val isGPSEnabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER)
+//        val isNetworkEnabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+//
+//        if (ContextCompat.checkSelfPermission(
+//                applicationContext,
+//                Manifest.permission.ACCESS_FINE_LOCATION
+//            ) != PackageManager.PERMISSION_GRANTED
+//        ) {
+//            ActivityCompat.requestPermissions(
+//                this,
+//                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+//                0
+//            )
+//        } else {
+//            when {
+//                isNetworkEnabled -> {
+//                    val location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+//                    getLongitude = location?.longitude
+//                    getLatitude = location?.latitude
+//                }
+//                isGPSEnabled -> {
+//                    val location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+//                    getLongitude = location?.longitude
+//                    getLatitude = location?.latitude
+//                }
+//            }
+//        }
+//
+//        val retrofit = Retrofit.Builder()
+//            .baseUrl(BASE_URL)
+//            .addConverterFactory(GsonConverterFactory.create())
+//            .build()
+//
+//        val service = retrofit.create(RetrofitService::class.java)
+//
+//        service.getCurrentDustData(
+//            getLatitude.toString(), getLongitude.toString(),
+//            APPID
+//        ).enqueue(object : Callback<DustResponse> {
+//            override fun onResponse(
+//                call: Call<DustResponse>,
+//                response: Response<DustResponse>
+//            ) {
+//                if (response.isSuccessful) {
+//                    val dustResponse = response.body()
+//                    if (dustResponse != null) {
+//                        val pm10 = dustResponse.dataList[0].components?.pm10
+//                        val pm2_5 = dustResponse.dataList[0].components?.pm2_5
+//                        val no2 = dustResponse.dataList[0].components?.no2
+//                        val o3 = dustResponse.dataList[0].components?.o3
+//                        val co = dustResponse.dataList[0].components?.co
+//                        val so2 = dustResponse.dataList[0].components?.so2
+//                        dustConcentration["pm10"] = pm10!!
+//                        dustConcentration["pm2_5"] = pm2_5!!
+//                        dustConcentration["no2"] = no2!!
+//                        dustConcentration["o3"] = o3!!
+//                        dustConcentration["co"] = co!!
+//                        dustConcentration["so2"] = so2!!
+//                        dustAdapter.notifyDataSetChanged()
+//                    }
+//                }
+//            }
+//
+//            override fun onFailure(call: Call<DustResponse>, t: Throwable) {
+//                Log.d("checkkk", "fail ${t.message}")
+//            }
+//        })
+//    }
 }
