@@ -79,18 +79,8 @@ class SearchActivity : AppCompatActivity() {
                                 adapter = locationAdapter
                             }
                             binding.searchLocationRecyclerView.adapter?.notifyDataSetChanged()
-                            Log.d("checkkk", "${kakaoResponse.documents.size}")
-                            Log.d("checkkk", "$addressName")
-                            Log.d("checkkk", "$x")
-                            Log.d("checkkk", "$y")
                         }
-                    } else {
-                        Log.d("checkkk", "??")
                     }
-                } else {
-                    Log.d("checkkk", "mm")
-                    Log.d("checkkk", "${response.code()}")
-                    Log.d("checkkk", response.message())
                 }
             }
 

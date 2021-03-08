@@ -14,7 +14,7 @@ import site.yoonsang.myapi.databinding.ItemLocationBinding
 
 class FavoriteAdapter(
     val context: Context,
-    val list: ArrayList<LocationInfo>
+    private val list: ArrayList<LocationInfo>
 ): RecyclerView.Adapter<FavoriteAdapter.ViewHolder>() {
 
     private val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -72,7 +72,6 @@ class FavoriteAdapter(
             .build()
         val appid = context.getString(R.string.appid)
         val service = retrofit.create(RetrofitService::class.java)
-//        var pm10: Double? = null
 
         service.getCurrentDustData(list[position].lat, list[position].lon, appid).enqueue(object :
             Callback<DustResponse> {
@@ -110,62 +109,4 @@ class FavoriteAdapter(
     }
 
     override fun getItemCount(): Int = list.size
-
-//    fun getData(position: Int): Double? {
-//        val retrofit = Retrofit.Builder()
-//            .baseUrl("http://api.openweathermap.org/")
-//            .addConverterFactory(GsonConverterFactory.create())
-//            .build()
-//        val appid = context.getString(R.string.appid)
-//        val service = retrofit.create(RetrofitService::class.java)
-//        var pm10: Double? = null
-//
-//        service.getCurrentDustData(list[position].lat, list[position].lon, appid).enqueue(object :
-//            Callback<DustResponse> {
-//            override fun onResponse(call: Call<DustResponse>, response: Response<DustResponse>) {
-//                if (response.isSuccessful) {
-//                    val dustResponse = response.body()
-//                    if (dustResponse != null) {
-//                        pm10 = dustResponse.dataList[0].components?.pm10
-//                    }
-//                }
-//            }
-//
-//            override fun onFailure(call: Call<DustResponse>, t: Throwable) {
-//            }
-//        })
-//        return pm10
-//    }
-
-//    fun getGeo(position: Int): String? {
-//        val geoRetrofit = Retrofit.Builder()
-//            .baseUrl("https://dapi.kakao.com/")
-//            .addConverterFactory(GsonConverterFactory.create())
-//            .build()
-//
-//        val geoService = geoRetrofit.create(RetrofitService::class.java)
-//        val restKey = context.getString(R.string.kakao_rest_key)
-//        var addressName: String? = null
-//
-//        geoService.getAddressName(list[position].lat, list[position].lon, restKey).enqueue(object : Callback<AddressResponse> {
-//            override fun onResponse(
-//                call: Call<AddressResponse>,
-//                response: Response<AddressResponse>
-//            ) {
-//                if (response.isSuccessful) {
-//                    val kakaoResponse = response.body()
-//                    if (kakaoResponse != null) {
-//                        if (kakaoResponse.documents.size > 0) {
-//                            addressName = kakaoResponse.documents[0].addressName.toString()
-//                        }
-//                    }
-//                }
-//            }
-//
-//            override fun onFailure(call: Call<AddressResponse>, t: Throwable) {
-//            }
-//        })
-//
-//        return addressName
-//    }
 }

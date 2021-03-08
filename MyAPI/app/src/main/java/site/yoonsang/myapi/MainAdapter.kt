@@ -124,6 +124,7 @@ class MainAdapter(
                                 holder.mainUploadDate.text = sdf
                                 holder.mainViewpager2.adapter =
                                     DustFragmentAdapter(context, dustConcentration)
+                                holder.mainViewpager2.currentItem = (Int.MAX_VALUE / 2) + 1
                                 if (dustConcentration["pm10"]!! >= 0 && dustConcentration["pm10"]!! < 30) {
                                     holder.mainStatusText.text = "좋음"
                                     holder.mainStatusImage.setImageResource(R.drawable.ic_very_good)
