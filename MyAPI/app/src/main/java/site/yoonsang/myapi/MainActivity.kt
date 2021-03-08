@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Geocoder
+import android.location.Location
 import android.location.LocationManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -12,10 +13,12 @@ import android.os.UserManager
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.MotionEvent
 import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.navigation.NavigationView
 import com.kakao.sdk.user.UserApiClient
 import com.nhn.android.naverlogin.OAuthLogin
@@ -33,81 +36,23 @@ import kotlin.collections.HashMap
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private val BASE_URL = "http://api.openweathermap.org/"
     private val NAVER_BASE_URL = "https://openapi.naver.com/"
-    private var getLatitude: Double? = null
-    private var getLongitude: Double? = null
-    private lateinit var APPID: String
-//    private lateinit var dustConcentration: HashMap<String, Double>
+    private val helper = DBHelper(this, DB_NAME, DB_VERSION)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val lm = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        val isGPSEnabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER)
-        val isNetworkEnabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
-
-        if (ContextCompat.checkSelfPermission(
-                applicationContext,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                0
-            )
-        } else {
-            when {
-                isNetworkEnabled -> {
-                    val location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-                    getLongitude = location?.longitude
-                    getLatitude = location?.latitude
-                }
-                isGPSEnabled -> {
-                    val location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-                    getLongitude = location?.longitude
-                    getLatitude = location?.latitude
-                }
-            }
-        }
-
-        val helper = DBHelper(this, DB_NAME, DB_VERSION)
-
-        if (helper.selectData().size == 0) {
-            helper.insertData(LocationInfo(getLatitude.toString(), getLongitude.toString()))
-        }
-
-        val mainAdapter = MainAdapter(this, helper.selectData(), binding)
-        binding.viewpager.adapter = mainAdapter
-//
-//        when (mainAdapter.binding.mainStatusText.text) {
-//            "좋음" -> {
-//                binding.mainToolBar.setBackgroundResource(R.color.veryGood)
-//                window.statusBarColor = getColor(R.color.statusVeryGood)
-//            }
-//            "보통" -> {
-//                binding.mainToolBar.setBackgroundResource(R.color.good)
-//                window.statusBarColor = getColor(R.color.statusGood)
-//            }
-//            "나쁨" -> {
-//                binding.mainToolBar.setBackgroundResource(R.color.bad)
-//                window.statusBarColor = getColor(R.color.statusBad)
-//            }
-//            "상당히 나쁨" -> {
-//                binding.mainToolBar.setBackgroundResource(R.color.veryBad)
-//                window.statusBarColor = getColor(R.color.statusVeryBad)
-//            }
-//        }
-
-        APPID = getString(R.string.appid)
+        getLatLng()
 
         setSupportActionBar(binding.mainToolBar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_menu)
         supportActionBar?.setDisplayShowTitleEnabled(false)
+
+        val mainAdapter = MainAdapter(this, helper.selectData())
+        binding.viewpager.adapter = mainAdapter
 
         val headerView = binding.navView.getHeaderView(0)
         val headerBinding = NaviHeaderBinding.bind(headerView)
@@ -177,7 +122,6 @@ class MainActivity : AppCompatActivity() {
                 headerBinding.navSort.text = "카카오"
             }
         }
-
     }
 
     override fun onResume() {
@@ -200,7 +144,6 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.menu_add -> {
                 val intent = Intent(this, FavoriteActivity::class.java)
-//                intent.putExtra("here", dustConcentration["pm10"])
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
                 startActivity(intent)
             }
@@ -211,5 +154,45 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.toolbar_menu, menu)
         return true
+    }
+
+    private fun getLatLng() {
+        val lm = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val isGPSEnabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER)
+        val isNetworkEnabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+        var getLatitude: Double? = null
+        var getLongitude: Double? = null
+
+        if (ActivityCompat.checkSelfPermission(
+                applicationContext,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                applicationContext,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                0
+            )
+            getLatLng()
+        } else {
+            when {
+                isNetworkEnabled -> {
+                    val location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+                    getLongitude = location?.longitude
+                    getLatitude = location?.latitude
+                }
+                isGPSEnabled -> {
+                    val location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+                    getLongitude = location?.longitude
+                    getLatitude = location?.latitude
+                }
+            }
+            if (helper.selectData().size == 0) {
+                helper.insertData(LocationInfo(getLatitude.toString(), getLongitude.toString()))
+            }
+        }
     }
 }

@@ -1,10 +1,6 @@
 package site.yoonsang.myapi
 
-import android.app.Activity
 import android.content.Context
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,17 +10,14 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import site.yoonsang.myapi.databinding.ActivityMainBinding
 import site.yoonsang.myapi.databinding.FragmentMainBinding
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 class MainAdapter(
     val context: Context,
-    private val list: ArrayList<LocationInfo>,
-    val mBinding: ActivityMainBinding
+    private val list: ArrayList<LocationInfo>
 ) : RecyclerView.Adapter<MainAdapter.ViewHolder>() {
 
     private val inflater =
@@ -32,6 +25,7 @@ class MainAdapter(
     lateinit var binding: FragmentMainBinding
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val mainLocationHere = binding.mainLocationHere
         val mainLocation = binding.mainLocation
         val mainStatusImage = binding.mainStatusImage
         val mainStatusMessage = binding.mainStatusMessage
@@ -39,6 +33,7 @@ class MainAdapter(
         val mainUploadDate = binding.mainUploadDate
         val mainRootLayout = binding.mainRootLayout
         val mainViewpager2 = binding.mainViewpager2
+        val mainRefresh = binding.mainSwipeRefresh
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -47,6 +42,18 @@ class MainAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
+        getData(holder, position)
+        holder.mainRefresh.setOnRefreshListener {
+            getData(holder, position)
+            notifyDataSetChanged()
+            if (holder.mainRefresh.isRefreshing) holder.mainRefresh.isRefreshing = false
+        }
+    }
+
+    override fun getItemCount(): Int = list.size
+
+    private fun getData(holder: ViewHolder, position: Int) {
         val geoRetrofit = Retrofit.Builder()
             .baseUrl("https://dapi.kakao.com/")
             .addConverterFactory(GsonConverterFactory.create())
@@ -66,6 +73,9 @@ class MainAdapter(
                         if (kakaoResponse != null) {
                             if (kakaoResponse.documents.size > 0) {
                                 val addressName = kakaoResponse.documents[0].addressName
+                                if (position != 0) {
+                                    holder.mainLocationHere.text = ""
+                                }
                                 holder.mainLocation.text = addressName
                             }
                         }
@@ -83,7 +93,7 @@ class MainAdapter(
             .build()
         val appid = context.getString(R.string.appid)
         val service = retrofit.create(RetrofitService::class.java)
-        var dustConcentration = hashMapOf<String, Double>()
+        val dustConcentration = hashMapOf<String, Double>()
 
         service.getCurrentDustData(list[position].lat, list[position].lon, appid)
             .enqueue(object : Callback<DustResponse> {
@@ -121,23 +131,18 @@ class MainAdapter(
                                     holder.mainViewpager2.setBackgroundResource(R.drawable.detail_very_good_background)
                                     holder.mainStatusMessage.text =
                                         context.getString(R.string.veryGood)
-                                    mBinding.mainToolBar.setBackgroundResource(R.color.veryGood)
-                                } else if (dustConcentration["pm10"]!! >= 39 && dustConcentration["pm10"]!! < 50) {
+                                } else if (dustConcentration["pm10"]!! >= 30 && dustConcentration["pm10"]!! < 50) {
                                     holder.mainStatusText.text = "보통"
                                     holder.mainStatusImage.setImageResource(R.drawable.ic_good)
                                     holder.mainRootLayout.setBackgroundResource(R.color.good)
                                     holder.mainViewpager2.setBackgroundResource(R.drawable.detail_good_background)
                                     holder.mainStatusMessage.text = context.getString(R.string.good)
-                                    mBinding.mainToolBar.setBackgroundResource(R.color.good)
-
                                 } else if (dustConcentration["pm10"]!! >= 50 && dustConcentration["pm10"]!! < 100) {
                                     holder.mainStatusText.text = "나쁨"
                                     holder.mainStatusImage.setImageResource(R.drawable.ic_bad)
                                     holder.mainRootLayout.setBackgroundResource(R.color.bad)
                                     holder.mainViewpager2.setBackgroundResource(R.drawable.detail_bad_background)
                                     holder.mainStatusMessage.text = context.getString(R.string.bad)
-                                    mBinding.mainToolBar.setBackgroundResource(R.color.bad)
-
                                 } else if (dustConcentration["pm10"]!! >= 100) {
                                     holder.mainStatusText.text = "상당히 나쁨"
                                     holder.mainStatusImage.setImageResource(R.drawable.ic_very_bad)
@@ -145,8 +150,6 @@ class MainAdapter(
                                     holder.mainViewpager2.setBackgroundResource(R.drawable.detail_very_bad_background)
                                     holder.mainStatusMessage.text =
                                         context.getString(R.string.veryBad)
-                                    mBinding.mainToolBar.setBackgroundResource(R.color.veryBad)
-
                                 }
                             }
 
@@ -158,6 +161,4 @@ class MainAdapter(
                 }
             })
     }
-
-    override fun getItemCount(): Int = list.size
 }
