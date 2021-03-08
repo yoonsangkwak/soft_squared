@@ -39,6 +39,8 @@ class MainFragment : Fragment() {
 
         dustConcentration = hashMapOf()
         val dustAdapter = DustFragmentAdapter(context!!, dustConcentration)
+        refreshData(dustAdapter)
+        Log.d("checkkk", "${dustConcentration.size}")
 
         binding.mainViewpager2.apply {
             adapter = dustAdapter
@@ -50,7 +52,6 @@ class MainFragment : Fragment() {
             binding.mainSwipeRefresh.isRefreshing = false
         }
 
-        refreshData(dustAdapter)
 
         return binding.root
     }

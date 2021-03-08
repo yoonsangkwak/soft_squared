@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
     private var getLatitude: Double? = null
     private var getLongitude: Double? = null
     private lateinit var APPID: String
-    private lateinit var dustConcentration: HashMap<String, Double>
+//    private lateinit var dustConcentration: HashMap<String, Double>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,7 +80,28 @@ class MainActivity : AppCompatActivity() {
             helper.insertData(LocationInfo(getLatitude.toString(), getLongitude.toString()))
         }
 
-        binding.viewpager.adapter = MainAdapter(this, helper.selectData())
+        val mainAdapter = MainAdapter(this, helper.selectData(), binding)
+        binding.viewpager.adapter = mainAdapter
+//
+//        when (mainAdapter.binding.mainStatusText.text) {
+//            "좋음" -> {
+//                binding.mainToolBar.setBackgroundResource(R.color.veryGood)
+//                window.statusBarColor = getColor(R.color.statusVeryGood)
+//            }
+//            "보통" -> {
+//                binding.mainToolBar.setBackgroundResource(R.color.good)
+//                window.statusBarColor = getColor(R.color.statusGood)
+//            }
+//            "나쁨" -> {
+//                binding.mainToolBar.setBackgroundResource(R.color.bad)
+//                window.statusBarColor = getColor(R.color.statusBad)
+//            }
+//            "상당히 나쁨" -> {
+//                binding.mainToolBar.setBackgroundResource(R.color.veryBad)
+//                window.statusBarColor = getColor(R.color.statusVeryBad)
+//            }
+//        }
+
         APPID = getString(R.string.appid)
 
         setSupportActionBar(binding.mainToolBar)
@@ -90,21 +111,6 @@ class MainActivity : AppCompatActivity() {
 
         val headerView = binding.navView.getHeaderView(0)
         val headerBinding = NaviHeaderBinding.bind(headerView)
-
-        dustConcentration = hashMapOf()
-//        val dustAdapter = DustFragmentAdapter(this, dustConcentration)
-
-//        binding.mainViewpager2.apply {
-//            adapter = dustAdapter
-//            currentItem = (Int.MAX_VALUE / 2) + 1
-//        }
-//
-//        binding.mainSwipeRefresh.setOnRefreshListener {
-//            refreshData(dustAdapter)
-//            binding.mainSwipeRefresh.isRefreshing = false
-//        }
-//
-//        refreshData(dustAdapter)
 
         binding.navView.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
@@ -171,6 +177,7 @@ class MainActivity : AppCompatActivity() {
                 headerBinding.navSort.text = "카카오"
             }
         }
+
     }
 
     override fun onResume() {
@@ -193,7 +200,7 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.menu_add -> {
                 val intent = Intent(this, FavoriteActivity::class.java)
-                intent.putExtra("here", dustConcentration["pm10"])
+//                intent.putExtra("here", dustConcentration["pm10"])
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
                 startActivity(intent)
             }
@@ -205,75 +212,4 @@ class MainActivity : AppCompatActivity() {
         menuInflater.inflate(R.menu.toolbar_menu, menu)
         return true
     }
-
-//    private fun refreshData(dustAdapter: DustFragmentAdapter) {
-//        val lm = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-//        val isGPSEnabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER)
-//        val isNetworkEnabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
-//
-//        if (ContextCompat.checkSelfPermission(
-//                applicationContext,
-//                Manifest.permission.ACCESS_FINE_LOCATION
-//            ) != PackageManager.PERMISSION_GRANTED
-//        ) {
-//            ActivityCompat.requestPermissions(
-//                this,
-//                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-//                0
-//            )
-//        } else {
-//            when {
-//                isNetworkEnabled -> {
-//                    val location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-//                    getLongitude = location?.longitude
-//                    getLatitude = location?.latitude
-//                }
-//                isGPSEnabled -> {
-//                    val location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-//                    getLongitude = location?.longitude
-//                    getLatitude = location?.latitude
-//                }
-//            }
-//        }
-//
-//        val retrofit = Retrofit.Builder()
-//            .baseUrl(BASE_URL)
-//            .addConverterFactory(GsonConverterFactory.create())
-//            .build()
-//
-//        val service = retrofit.create(RetrofitService::class.java)
-//
-//        service.getCurrentDustData(
-//            getLatitude.toString(), getLongitude.toString(),
-//            APPID
-//        ).enqueue(object : Callback<DustResponse> {
-//            override fun onResponse(
-//                call: Call<DustResponse>,
-//                response: Response<DustResponse>
-//            ) {
-//                if (response.isSuccessful) {
-//                    val dustResponse = response.body()
-//                    if (dustResponse != null) {
-//                        val pm10 = dustResponse.dataList[0].components?.pm10
-//                        val pm2_5 = dustResponse.dataList[0].components?.pm2_5
-//                        val no2 = dustResponse.dataList[0].components?.no2
-//                        val o3 = dustResponse.dataList[0].components?.o3
-//                        val co = dustResponse.dataList[0].components?.co
-//                        val so2 = dustResponse.dataList[0].components?.so2
-//                        dustConcentration["pm10"] = pm10!!
-//                        dustConcentration["pm2_5"] = pm2_5!!
-//                        dustConcentration["no2"] = no2!!
-//                        dustConcentration["o3"] = o3!!
-//                        dustConcentration["co"] = co!!
-//                        dustConcentration["so2"] = so2!!
-//                        dustAdapter.notifyDataSetChanged()
-//                    }
-//                }
-//            }
-//
-//            override fun onFailure(call: Call<DustResponse>, t: Throwable) {
-//                Log.d("checkkk", "fail ${t.message}")
-//            }
-//        })
-//    }
 }
