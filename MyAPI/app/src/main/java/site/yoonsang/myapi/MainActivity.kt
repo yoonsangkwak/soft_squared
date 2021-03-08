@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_menu)
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        val mainAdapter = MainAdapter(this, helper.selectData())
+        val mainAdapter = MainAdapter(this, helper.selectData(), binding.viewpager)
         binding.viewpager.adapter = mainAdapter
 
         val headerView = binding.navView.getHeaderView(0)

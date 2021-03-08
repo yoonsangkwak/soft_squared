@@ -4,7 +4,10 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -17,7 +20,8 @@ import kotlin.collections.ArrayList
 
 class MainAdapter(
     val context: Context,
-    private val list: ArrayList<LocationInfo>
+    private val list: ArrayList<LocationInfo>,
+    val viewPager: ViewPager2
 ) : RecyclerView.Adapter<MainAdapter.ViewHolder>() {
 
     private val inflater =
@@ -34,15 +38,20 @@ class MainAdapter(
         val mainRootLayout = binding.mainRootLayout
         val mainViewpager2 = binding.mainViewpager2
         val mainRefresh = binding.mainSwipeRefresh
+        val mainToolBar = binding.mainToolBar
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         binding = FragmentMainBinding.inflate(inflater, parent, false)
+        (context as AppCompatActivity).setSupportActionBar(binding.mainToolBar)
+        context.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        context.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_menu)
+        context.supportActionBar?.setDisplayShowTitleEnabled(false)
+        binding.mainIndicator.setViewPager(viewPager)
         return ViewHolder(binding.root)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-
         getData(holder, position)
         holder.mainRefresh.setOnRefreshListener {
             getData(holder, position)
@@ -132,18 +141,21 @@ class MainAdapter(
                                     holder.mainViewpager2.setBackgroundResource(R.drawable.detail_very_good_background)
                                     holder.mainStatusMessage.text =
                                         context.getString(R.string.veryGood)
+                                    holder.mainToolBar.setBackgroundResource(R.color.veryGood)
                                 } else if (dustConcentration["pm10"]!! >= 30 && dustConcentration["pm10"]!! < 50) {
                                     holder.mainStatusText.text = "보통"
                                     holder.mainStatusImage.setImageResource(R.drawable.ic_good)
                                     holder.mainRootLayout.setBackgroundResource(R.color.good)
                                     holder.mainViewpager2.setBackgroundResource(R.drawable.detail_good_background)
                                     holder.mainStatusMessage.text = context.getString(R.string.good)
+                                    holder.mainToolBar.setBackgroundResource(R.color.good)
                                 } else if (dustConcentration["pm10"]!! >= 50 && dustConcentration["pm10"]!! < 100) {
                                     holder.mainStatusText.text = "나쁨"
                                     holder.mainStatusImage.setImageResource(R.drawable.ic_bad)
                                     holder.mainRootLayout.setBackgroundResource(R.color.bad)
                                     holder.mainViewpager2.setBackgroundResource(R.drawable.detail_bad_background)
                                     holder.mainStatusMessage.text = context.getString(R.string.bad)
+                                    holder.mainToolBar.setBackgroundResource(R.color.bad)
                                 } else if (dustConcentration["pm10"]!! >= 100) {
                                     holder.mainStatusText.text = "상당히 나쁨"
                                     holder.mainStatusImage.setImageResource(R.drawable.ic_very_bad)
@@ -151,6 +163,7 @@ class MainAdapter(
                                     holder.mainViewpager2.setBackgroundResource(R.drawable.detail_very_bad_background)
                                     holder.mainStatusMessage.text =
                                         context.getString(R.string.veryBad)
+                                    holder.mainToolBar.setBackgroundResource(R.color.veryBad)
                                 }
                             }
 
