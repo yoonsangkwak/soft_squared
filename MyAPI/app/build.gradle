@@ -60,4 +60,6 @@ dependencies {
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 
     implementation 'me.relex:circleindicator:2.1.6'
+
+    implementation  'com.chauthai.swipereveallayout:swipe-reveal-layout:1.4.1'
 }

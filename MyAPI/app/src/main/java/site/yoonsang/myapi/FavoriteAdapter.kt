@@ -1,10 +1,12 @@
 package site.yoonsang.myapi
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.chauthai.swipereveallayout.ViewBinderHelper
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -18,13 +20,15 @@ class FavoriteAdapter(
 ): RecyclerView.Adapter<FavoriteAdapter.ViewHolder>() {
 
     private val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-    lateinit var binding: ItemLocationBinding
+    private lateinit var binding: ItemLocationBinding
+    private val binderHelper = ViewBinderHelper()
 
     inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val locationName = binding.locationName
         val locationStatusImage = binding.locationStatusImage
         val locationStatusText = binding.locationStatusText
         val locationContainer = binding.locationContainer
+        val favoriteDelete = binding.favoriteDelete
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -33,7 +37,6 @@ class FavoriteAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-
         val geoRetrofit = Retrofit.Builder()
             .baseUrl("https://dapi.kakao.com/")
             .addConverterFactory(GsonConverterFactory.create())
@@ -84,19 +87,19 @@ class FavoriteAdapter(
                             if (pm10 >= 0 && pm10 < 30) {
                                 holder.locationStatusText.text = "좋음"
                                 holder.locationStatusImage.setImageResource(R.drawable.ic_very_good)
-                                holder.locationContainer.setBackgroundResource(R.color.veryGood)
+                                holder.locationContainer.setBackgroundResource(R.drawable.favorite_very_good)
                             } else if (pm10 >= 39 && pm10 < 50) {
                                 holder.locationStatusText.text = "보통"
                                 holder.locationStatusImage.setImageResource(R.drawable.ic_good)
-                                holder.locationContainer.setBackgroundResource(R.color.good)
+                                holder.locationContainer.setBackgroundResource(R.drawable.favorite_good)
                             } else if (pm10 >= 50 && pm10 < 100) {
                                 holder.locationStatusText.text = "나쁨"
                                 holder.locationStatusImage.setImageResource(R.drawable.ic_bad)
-                                holder.locationContainer.setBackgroundResource(R.color.bad)
+                                holder.locationContainer.setBackgroundResource(R.drawable.favorite_bad)
                             } else if (pm10 >= 100) {
-                                holder.locationStatusText.text = "상당히 나쁨"
+                                holder.locationStatusText.text = "매우 나쁨"
                                 holder.locationStatusImage.setImageResource(R.drawable.ic_very_bad)
-                                holder.locationContainer.setBackgroundResource(R.color.veryBad)
+                                holder.locationContainer.setBackgroundResource(R.drawable.favorite_very_bad)
                             }
                         }
                     }
@@ -106,6 +109,19 @@ class FavoriteAdapter(
             override fun onFailure(call: Call<DustResponse>, t: Throwable) {
             }
         })
+        val helper = DBHelper(context, DB_NAME, DB_VERSION)
+        binderHelper.setOpenOnlyOne(true)
+        binderHelper.bind(binding.swipeRevealLayout, "delete")
+
+        holder.favoriteDelete.setOnClickListener {
+            Log.d("checkkk", "delete!")
+            list.removeAt(holder.adapterPosition)
+            notifyItemRemoved(position)
+            val a = helper.searchData(position)
+            Log.d("checkkk", "$a")
+            helper.deleteData(a)
+            Log.d("checkkk", "${helper.selectData().size}")
+        }
     }
 
     override fun getItemCount(): Int = list.size

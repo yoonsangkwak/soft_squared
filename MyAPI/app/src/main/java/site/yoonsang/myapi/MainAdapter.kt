@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import retrofit2.Call
@@ -157,7 +156,7 @@ class MainAdapter(
                                     holder.mainStatusMessage.text = context.getString(R.string.bad)
                                     holder.mainToolBar.setBackgroundResource(R.color.bad)
                                 } else if (dustConcentration["pm10"]!! >= 100) {
-                                    holder.mainStatusText.text = "상당히 나쁨"
+                                    holder.mainStatusText.text = "매우 나쁨"
                                     holder.mainStatusImage.setImageResource(R.drawable.ic_very_bad)
                                     holder.mainRootLayout.setBackgroundResource(R.color.veryBad)
                                     holder.mainViewpager2.setBackgroundResource(R.drawable.detail_very_bad_background)

@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.util.Log
 
 const val DB_NAME = "MyAPI"
 const val DB_VERSION = 1
@@ -70,5 +71,11 @@ class DBHelper(
         cursor.close()
         rd.close()
         return answer
+    }
+
+    fun deleteData(locationInfo: LocationInfo) {
+        val wd = writableDatabase
+        wd.delete(TABLE_NAME, "$COL_LAT = ? AND $COL_LON = ?", arrayOf(locationInfo.lat, locationInfo.lon))
+        wd.close()
     }
 }
