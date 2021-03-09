@@ -31,6 +31,7 @@ import site.yoonsang.myapi.databinding.ActivityMainBinding
 import site.yoonsang.myapi.databinding.NaviHeaderBinding
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 class MainActivity : AppCompatActivity() {
@@ -51,8 +52,8 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_menu)
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        val mainAdapter = MainAdapter(this, helper.selectData(), binding.viewpager)
-        binding.viewpager.adapter = mainAdapter
+//        val mainAdapter = MainAdapter(this, helper.selectData(), binding.viewpager)
+//        binding.viewpager.adapter = mainAdapter
 
         val headerView = binding.navView.getHeaderView(0)
         val headerBinding = NaviHeaderBinding.bind(headerView)
@@ -126,6 +127,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        val mainAdapter = MainAdapter(this, helper.selectData(), binding.viewpager)
+        binding.viewpager.adapter = mainAdapter
         binding.viewpager.adapter?.notifyDataSetChanged()
     }
 

@@ -16,12 +16,12 @@ class FavoriteActivity : AppCompatActivity() {
         binding = ActivityFavoriteBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val helper = DBHelper(this, DB_NAME, DB_VERSION)
-
-        binding.favoriteLocationRecyclerView.apply {
-            layoutManager = LinearLayoutManager(context)
-            adapter = FavoriteAdapter(context, helper.selectData())
-        }
+//        val helper = DBHelper(this, DB_NAME, DB_VERSION)
+//
+//        binding.favoriteLocationRecyclerView.apply {
+//            layoutManager = LinearLayoutManager(context)
+//            adapter = FavoriteAdapter(context, helper.selectData())
+//        }
 
         binding.favoriteBack.setOnClickListener {
             finish()
@@ -35,6 +35,12 @@ class FavoriteActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        val helper = DBHelper(this, DB_NAME, DB_VERSION)
+
+        binding.favoriteLocationRecyclerView.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = FavoriteAdapter(context, helper.selectData())
+        }
         binding.favoriteLocationRecyclerView.adapter?.notifyDataSetChanged()
     }
 }

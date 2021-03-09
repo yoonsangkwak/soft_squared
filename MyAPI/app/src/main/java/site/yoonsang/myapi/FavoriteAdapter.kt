@@ -30,6 +30,7 @@ class FavoriteAdapter(
         val locationStatusText = binding.locationStatusText
         val locationContainer = binding.locationContainer
         val favoriteDelete = binding.favoriteDelete
+        val swipeReveal = binding.swipeRevealLayout
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -90,7 +91,7 @@ class FavoriteAdapter(
                                 holder.locationStatusText.text = "좋음"
                                 holder.locationStatusImage.setImageResource(R.drawable.ic_very_good)
                                 holder.locationContainer.setBackgroundResource(R.drawable.favorite_very_good)
-                            } else if (pm10 >= 39 && pm10 < 50) {
+                            } else if (pm10 >= 30 && pm10 < 50) {
                                 holder.locationStatusText.text = "보통"
                                 holder.locationStatusImage.setImageResource(R.drawable.ic_good)
                                 holder.locationContainer.setBackgroundResource(R.drawable.favorite_good)
@@ -112,15 +113,18 @@ class FavoriteAdapter(
             }
         })
         val helper = DBHelper(context, DB_NAME, DB_VERSION)
+        binderHelper.bind(holder.swipeReveal, "${holder.adapterPosition}")
         binderHelper.setOpenOnlyOne(true)
-        binderHelper.bind(binding.swipeRevealLayout, "delete")
+        binderHelper.lockSwipe("0")
 
         holder.favoriteDelete.setOnClickListener {
             if (position != 0) {
-                list.removeAt(holder.adapterPosition)
-                notifyItemRemoved(position)
-                val item = helper.searchData(position)
-                helper.deleteData(item)
+                if (holder.swipeReveal.isOpened) {
+                    list.removeAt(position)
+                    notifyItemRemoved(position)
+                    val item = helper.searchData(position)
+                    helper.deleteData(item)
+                }
             }
         }
     }
