@@ -2,10 +2,12 @@ package site.yoonsang.myapi
 
 import android.app.Activity
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import site.yoonsang.myapi.databinding.ItemSearchLocationBinding
 
@@ -31,8 +33,12 @@ class LocationAdapter(
         holder.addressName.text = list[position].addressName
         holder.itemView.setOnClickListener {
             val helper = DBHelper(context, DB_NAME, DB_VERSION)
-            helper.insertData(LocationInfo(list[position].addressName!!, list[0].y!!, list[0].x!!))
-            (context as Activity).finish()
+            if (helper.searchData(list[position].addressName!!) == null) {
+                helper.insertData(LocationInfo(list[position].addressName!!, list[position].y!!, list[position].x!!))
+                (context as Activity).finish()
+            } else {
+                Toast.makeText(context, "이미 추가된 지역입니다.", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

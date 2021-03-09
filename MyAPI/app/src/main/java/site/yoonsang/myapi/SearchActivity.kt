@@ -27,6 +27,10 @@ class SearchActivity : AppCompatActivity() {
             binding.searchEditText.setText("")
         }
 
+        binding.searchBack.setOnClickListener {
+            finish()
+        }
+
         binding.searchEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }

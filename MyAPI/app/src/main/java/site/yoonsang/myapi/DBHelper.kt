@@ -24,7 +24,7 @@ class DBHelper(
     context: Context,
     name: String,
     version: Int
-): SQLiteOpenHelper(context, name, null, version) {
+) : SQLiteOpenHelper(context, name, null, version) {
     override fun onCreate(db: SQLiteDatabase?) {
         val create = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + "(" +
                 COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -74,6 +74,26 @@ class DBHelper(
         val lat = cursor.getString(cursor.getColumnIndex(COL_LAT))
         val lon = cursor.getString(cursor.getColumnIndex(COL_LON))
         val answer = LocationInfo(name, lat, lon)
+        cursor.close()
+        rd.close()
+        return answer
+    }
+
+    fun searchData(newName: String): LocationInfo? {
+        val select = "SELECT * FROM $TABLE_NAME"
+        val rd = readableDatabase
+        val cursor = rd.rawQuery(select, null)
+        var answer: LocationInfo? = null
+
+        while (cursor.moveToNext()) {
+            val name = cursor.getString(cursor.getColumnIndex(COL_NAME))
+            val lat = cursor.getString(cursor.getColumnIndex(COL_LAT))
+            val lon = cursor.getString(cursor.getColumnIndex(COL_LON))
+            if (name == newName) {
+                answer = LocationInfo(name, lat, lon)
+                break
+            }
+        }
         cursor.close()
         rd.close()
         return answer

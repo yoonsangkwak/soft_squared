@@ -132,7 +132,7 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.menu_add -> {
                 val intent = Intent(this, FavoriteActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+//                intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
                 startActivity(intent)
             }
         }

@@ -47,14 +47,14 @@ class DustFragmentAdapter(
                 if (dustConcentration["pm10"]!! >= 0 && dustConcentration["pm10"]!! < 30) {
                     holder.statusFirst.text = "좋음"
                     holder.imageFirst.setImageResource(R.drawable.ic_very_good)
-                } else if (dustConcentration["pm10"]!! >= 39 && dustConcentration["pm10"]!! < 50) {
+                } else if (dustConcentration["pm10"]!! >= 30 && dustConcentration["pm10"]!! < 50) {
                     holder.statusFirst.text = "보통"
                     holder.imageFirst.setImageResource(R.drawable.ic_good)
                 } else if (dustConcentration["pm10"]!! >= 50 && dustConcentration["pm10"]!! < 100) {
                     holder.statusFirst.text = "나쁨"
                     holder.imageFirst.setImageResource(R.drawable.ic_bad)
                 } else if (dustConcentration["pm10"]!! >= 100) {
-                    holder.statusFirst.text = "상당히 나쁨"
+                    holder.statusFirst.text = "매우 나쁨"
                     holder.imageFirst.setImageResource(R.drawable.ic_very_bad)
                 }
             }
@@ -71,7 +71,7 @@ class DustFragmentAdapter(
                     holder.statusSecond.text = "나쁨"
                     holder.imageSecond.setImageResource(R.drawable.ic_bad)
                 } else if (dustConcentration["pm2_5"]!! >= 50) {
-                    holder.statusSecond.text = "상당히 나쁨"
+                    holder.statusSecond.text = "매우 나쁨"
                     holder.imageSecond.setImageResource(R.drawable.ic_very_bad)
                 }
             }
@@ -88,7 +88,7 @@ class DustFragmentAdapter(
                     holder.statusThird.text = "나쁨"
                     holder.imageThird.setImageResource(R.drawable.ic_bad)
                 } else if (dustConcentration["no2"]!! >= 200) {
-                    holder.statusThird.text = "상당히 나쁨"
+                    holder.statusThird.text = "매우 나쁨"
                     holder.imageThird.setImageResource(R.drawable.ic_very_bad)
                 }
             }
@@ -106,7 +106,7 @@ class DustFragmentAdapter(
                     holder.statusFirst.text = "나쁨"
                     holder.imageFirst.setImageResource(R.drawable.ic_bad)
                 } else if (dustConcentration["o3"]!! >= 150) {
-                    holder.statusFirst.text = "상당히 나쁨"
+                    holder.statusFirst.text = "매우 나쁨"
                     holder.imageFirst.setImageResource(R.drawable.ic_very_bad)
                 }
             }
@@ -123,7 +123,7 @@ class DustFragmentAdapter(
                     holder.statusSecond.text = "나쁨"
                     holder.imageSecond.setImageResource(R.drawable.ic_bad)
                 } else if (dustConcentration["co"]!! >= 15000) {
-                    holder.statusSecond.text = "상당히 나쁨"
+                    holder.statusSecond.text = "매우 나쁨"
                     holder.imageSecond.setImageResource(R.drawable.ic_very_bad)
                 }
             }
@@ -140,7 +140,7 @@ class DustFragmentAdapter(
                     holder.statusThird.text = "나쁨"
                     holder.imageThird.setImageResource(R.drawable.ic_bad)
                 } else if (dustConcentration["so2"]!! >= 150) {
-                    holder.statusThird.text = "상당히 나쁨"
+                    holder.statusThird.text = "매우 나쁨"
                     holder.imageThird.setImageResource(R.drawable.ic_very_bad)
                 }
             }
