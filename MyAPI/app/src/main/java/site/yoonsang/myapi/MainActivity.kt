@@ -191,7 +191,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             if (helper.selectData().size == 0) {
-                helper.insertData(LocationInfo(getLatitude.toString(), getLongitude.toString()))
+                helper.insertData(LocationInfo(0, getLatitude.toString(), getLongitude.toString()))
             }
         }
     }

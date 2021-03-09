@@ -17,13 +17,14 @@ import site.yoonsang.myapi.databinding.ItemLocationBinding
 class FavoriteAdapter(
     val context: Context,
     private val list: ArrayList<LocationInfo>
-): RecyclerView.Adapter<FavoriteAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<FavoriteAdapter.ViewHolder>() {
 
-    private val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+    private val inflater =
+        context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
     private lateinit var binding: ItemLocationBinding
     private val binderHelper = ViewBinderHelper()
 
-    inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val locationName = binding.locationName
         val locationStatusImage = binding.locationStatusImage
         val locationStatusText = binding.locationStatusText
@@ -45,29 +46,30 @@ class FavoriteAdapter(
         val geoService = geoRetrofit.create(RetrofitService::class.java)
         val restKey = context.getString(R.string.kakao_rest_key)
 
-        geoService.getAddressName(list[position].lon, list[position].lat, restKey).enqueue(object : Callback<AddressResponse> {
-            override fun onResponse(
-                call: Call<AddressResponse>,
-                response: Response<AddressResponse>
-            ) {
-                if (response.isSuccessful) {
-                    val kakaoResponse = response.body()
-                    if (kakaoResponse != null) {
-                        if (kakaoResponse.documents.size > 0) {
-                            val addressName = kakaoResponse.documents[0].addressName
-                            if (position == 0) {
-                                holder.locationName.text = "GPS 현재 위치"
-                            } else {
-                            holder.locationName.text = addressName
+        geoService.getAddressName(list[position].lon, list[position].lat, restKey)
+            .enqueue(object : Callback<AddressResponse> {
+                override fun onResponse(
+                    call: Call<AddressResponse>,
+                    response: Response<AddressResponse>
+                ) {
+                    if (response.isSuccessful) {
+                        val kakaoResponse = response.body()
+                        if (kakaoResponse != null) {
+                            if (kakaoResponse.documents.size > 0) {
+                                val addressName = kakaoResponse.documents[0].addressName
+                                if (position == 0) {
+                                    holder.locationName.text = "GPS 현재 위치"
+                                } else {
+                                    holder.locationName.text = addressName
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            override fun onFailure(call: Call<AddressResponse>, t: Throwable) {
-            }
-        })
+                override fun onFailure(call: Call<AddressResponse>, t: Throwable) {
+                }
+            })
 
         val retrofit = Retrofit.Builder()
             .baseUrl("http://api.openweathermap.org/")
@@ -114,13 +116,12 @@ class FavoriteAdapter(
         binderHelper.bind(binding.swipeRevealLayout, "delete")
 
         holder.favoriteDelete.setOnClickListener {
-            Log.d("checkkk", "delete!")
-            list.removeAt(holder.adapterPosition)
-            notifyItemRemoved(position)
-            val a = helper.searchData(position)
-            Log.d("checkkk", "$a")
-            helper.deleteData(a)
-            Log.d("checkkk", "${helper.selectData().size}")
+            if (position != 0) {
+                list.removeAt(holder.adapterPosition)
+                notifyItemRemoved(position)
+                val item = helper.searchData(position)
+                helper.deleteData(item)
+            }
         }
     }
 

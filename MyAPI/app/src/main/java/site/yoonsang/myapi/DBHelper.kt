@@ -14,6 +14,7 @@ const val COL_LAT = "lat"
 const val COL_LON = "lon"
 
 data class LocationInfo(
+    val num: Int,
     val lat: String,
     val lon: String
 )
@@ -51,7 +52,7 @@ class DBHelper(
         while (cursor.moveToNext()) {
             val lat = cursor.getString(cursor.getColumnIndex(COL_LAT))
             val lon = cursor.getString(cursor.getColumnIndex(COL_LON))
-            val locaInfo = LocationInfo(lat, lon)
+            val locaInfo = LocationInfo(cursor.position, lat, lon)
             list.add(locaInfo)
         }
         cursor.close()
@@ -67,7 +68,7 @@ class DBHelper(
         cursor.moveToPosition(position)
         val lat = cursor.getString(cursor.getColumnIndex(COL_LAT))
         val lon = cursor.getString(cursor.getColumnIndex(COL_LON))
-        val answer = LocationInfo(lat, lon)
+        val answer = LocationInfo(position, lat, lon)
         cursor.close()
         rd.close()
         return answer
@@ -75,7 +76,7 @@ class DBHelper(
 
     fun deleteData(locationInfo: LocationInfo) {
         val wd = writableDatabase
-        wd.delete(TABLE_NAME, "$COL_LAT = ? AND $COL_LON = ?", arrayOf(locationInfo.lat, locationInfo.lon))
+        wd.delete(TABLE_NAME, "$COL_ID = ${locationInfo.num + 1}", null)
         wd.close()
     }
 }
