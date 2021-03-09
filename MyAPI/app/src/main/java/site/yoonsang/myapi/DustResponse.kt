@@ -47,6 +47,8 @@ class AddressResponse(
 
 class Documents{
     @SerializedName("address_name") var addressName: String? = null
+    @SerializedName("region_2depth_name") var cityName: String? = null
+    @SerializedName("region_3depth_name") var dongName: String? = null
     @SerializedName("x") var x: String? = null
     @SerializedName("y") var y: String? = null
 }

@@ -31,7 +31,7 @@ class LocationAdapter(
         holder.addressName.text = list[position].addressName
         holder.itemView.setOnClickListener {
             val helper = DBHelper(context, DB_NAME, DB_VERSION)
-            helper.insertData(LocationInfo(position, list[0].y!!, list[0].x!!))
+            helper.insertData(LocationInfo(list[position].addressName!!, list[0].y!!, list[0].x!!))
             (context as Activity).finish()
         }
     }

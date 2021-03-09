@@ -4,22 +4,14 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.Geocoder
-import android.location.Location
 import android.location.LocationManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.UserManager
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.MotionEvent
-import android.widget.TextView
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
-import androidx.viewpager2.widget.ViewPager2
-import com.google.android.material.navigation.NavigationView
 import com.kakao.sdk.user.UserApiClient
 import com.nhn.android.naverlogin.OAuthLogin
 import retrofit2.Call
@@ -29,10 +21,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import site.yoonsang.myapi.databinding.ActivityMainBinding
 import site.yoonsang.myapi.databinding.NaviHeaderBinding
-import java.text.SimpleDateFormat
-import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 class MainActivity : AppCompatActivity() {
 
@@ -51,9 +39,6 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_menu)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-
-//        val mainAdapter = MainAdapter(this, helper.selectData(), binding.viewpager)
-//        binding.viewpager.adapter = mainAdapter
 
         val headerView = binding.navView.getHeaderView(0)
         val headerBinding = NaviHeaderBinding.bind(headerView)
@@ -194,7 +179,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             if (helper.selectData().size == 0) {
-                helper.insertData(LocationInfo(0, getLatitude.toString(), getLongitude.toString()))
+                helper.insertData(LocationInfo("GPS 현재 위치", getLatitude.toString(), getLongitude.toString()))
             }
         }
     }

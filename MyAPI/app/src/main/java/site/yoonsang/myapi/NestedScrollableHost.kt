@@ -16,8 +16,6 @@ package site.yoonsang.myapi
  * limitations under the License.
  */
 
-//package androidx.viewpager2.integration.testapp
-
 import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent

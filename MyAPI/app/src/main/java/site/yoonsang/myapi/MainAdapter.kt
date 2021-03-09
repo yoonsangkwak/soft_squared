@@ -20,7 +20,7 @@ import kotlin.collections.ArrayList
 class MainAdapter(
     val context: Context,
     private val list: ArrayList<LocationInfo>,
-    val viewPager: ViewPager2
+    private val viewPager: ViewPager2
 ) : RecyclerView.Adapter<MainAdapter.ViewHolder>() {
 
     private val inflater =
@@ -80,11 +80,12 @@ class MainAdapter(
                         val kakaoResponse = response.body()
                         if (kakaoResponse != null) {
                             if (kakaoResponse.documents.size > 0) {
-                                val addressName = kakaoResponse.documents[0].addressName
+                                val cityName = kakaoResponse.documents[0].cityName
+                                val dongName = kakaoResponse.documents[0].dongName
                                 if (position != 0) {
                                     holder.mainLocationHere.text = ""
                                 }
-                                holder.mainLocation.text = addressName
+                                holder.mainLocation.text = "$cityName $dongName"
                             }
                         }
                     }

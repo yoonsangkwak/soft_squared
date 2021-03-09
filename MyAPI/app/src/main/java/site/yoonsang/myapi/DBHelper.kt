@@ -10,11 +10,12 @@ const val DB_NAME = "MyAPI"
 const val DB_VERSION = 1
 const val TABLE_NAME = "fragment"
 const val COL_ID = "id"
+const val COL_NAME = "name"
 const val COL_LAT = "lat"
 const val COL_LON = "lon"
 
 data class LocationInfo(
-    val num: Int,
+    val name: String,
     val lat: String,
     val lon: String
 )
@@ -26,7 +27,8 @@ class DBHelper(
 ): SQLiteOpenHelper(context, name, null, version) {
     override fun onCreate(db: SQLiteDatabase?) {
         val create = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + "(" +
-                COL_ID + " INTEGER PRIMARY KEY, " +
+                COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COL_NAME + " name, " +
                 COL_LAT + " lat, " +
                 COL_LON + " lon " + ")"
         db?.execSQL(create)
@@ -37,6 +39,7 @@ class DBHelper(
     fun insertData(locationInfo: LocationInfo) {
         val wd = writableDatabase
         val values = ContentValues()
+        values.put(COL_NAME, locationInfo.name)
         values.put(COL_LAT, locationInfo.lat)
         values.put(COL_LON, locationInfo.lon)
         wd.insert(TABLE_NAME, null, values)
@@ -50,9 +53,10 @@ class DBHelper(
         val cursor = rd.rawQuery(select, null)
 
         while (cursor.moveToNext()) {
+            val name = cursor.getString(cursor.getColumnIndex(COL_NAME))
             val lat = cursor.getString(cursor.getColumnIndex(COL_LAT))
             val lon = cursor.getString(cursor.getColumnIndex(COL_LON))
-            val locaInfo = LocationInfo(cursor.position, lat, lon)
+            val locaInfo = LocationInfo(name, lat, lon)
             list.add(locaInfo)
         }
         cursor.close()
@@ -66,9 +70,10 @@ class DBHelper(
         val rd = readableDatabase
         val cursor = rd.rawQuery(select, null)
         cursor.moveToPosition(position)
+        val name = cursor.getString(cursor.getColumnIndex(COL_NAME))
         val lat = cursor.getString(cursor.getColumnIndex(COL_LAT))
         val lon = cursor.getString(cursor.getColumnIndex(COL_LON))
-        val answer = LocationInfo(position, lat, lon)
+        val answer = LocationInfo(name, lat, lon)
         cursor.close()
         rd.close()
         return answer
@@ -76,7 +81,7 @@ class DBHelper(
 
     fun deleteData(locationInfo: LocationInfo) {
         val wd = writableDatabase
-        wd.delete(TABLE_NAME, "$COL_ID = ${locationInfo.num + 1}", null)
+        wd.delete(TABLE_NAME, "$COL_NAME = ?", arrayOf(locationInfo.name))
         wd.close()
     }
 }

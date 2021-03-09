@@ -1,7 +1,6 @@
 package site.yoonsang.myapi
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -57,11 +56,12 @@ class FavoriteAdapter(
                         val kakaoResponse = response.body()
                         if (kakaoResponse != null) {
                             if (kakaoResponse.documents.size > 0) {
-                                val addressName = kakaoResponse.documents[0].addressName
+                                val cityName = kakaoResponse.documents[0].cityName
+                                val dongName = kakaoResponse.documents[0].dongName
                                 if (position == 0) {
                                     holder.locationName.text = "GPS 현재 위치"
                                 } else {
-                                    holder.locationName.text = addressName
+                                    holder.locationName.text = "$cityName $dongName"
                                 }
                             }
                         }
