@@ -6,7 +6,7 @@
 - [2주차 - LifeCycle](#myactivitylifecycle)
 - [3주차 - ListView](#mylistview)
 - [4주차 - Multi-Thread](#mythread)
-- 5주차 - Network Intro & API
+- [5주차 - Network Intro & API](#myapi)
 - 6주차 - Token & Restful
 
 
@@ -70,3 +70,27 @@
 - 게임이 끝나게되면 Time Score를 통해서 이름을 입력하고 랭킹에 등록한다.
 
 ![녹화_2021_03_04_09_44_01_133](https://user-images.githubusercontent.com/67727981/113276068-6baf1080-931a-11eb-8907-d255920fb066.gif)
+
+----------------------
+
+### MyAPI
+5주차 과제 - Network Intro & API
+
+- Naver와 Kakao 소셜로그인 기능 (이름, 이메일 사용)
+- 위치권한을 허용받고 현재 위치에 대한 미세먼지 정보를 openweathermap API를 통해서 받아온다.
+- 6가지 세부 미세먼지 정보를 viewpager를 통해서 나타내고 무한스크롤으로 구현
+- SwipeRefreshLayout을 사용해서 아래로 스크롤하면 데이터 갱신가능
+- 미세먼지 농도에 따라서 4가지 상태로 구분하고 상태에 따라서 이미지와 색상을 다르게 표현
+- SQLite를 통해서 즐겨찾기에 최대 6개 까지 지역을 저장가능
+- 즐겨찾기에 추가할 때 카카오 로컬 API를 통해 검색 가능
+- openweathermap API를 사용해서 위도와 경도로 검색한 지역의 미세먼지 상태 확인
+- DrawerLayout을 사용해서 사이드 메뉴바를 꺼낼 수 있고 로그아웃 가능
+
+![week5-1](https://user-images.githubusercontent.com/67727981/113392166-a626b500-93cf-11eb-8714-d5287ab28b3e.png)
+![week5-8](https://user-images.githubusercontent.com/67727981/113392163-a626b500-93cf-11eb-8959-3bfdcf19b18b.png)
+![week5-2](https://user-images.githubusercontent.com/67727981/113392170-a6bf4b80-93cf-11eb-8db9-f198c1980102.png)
+![week5-3](https://user-images.githubusercontent.com/67727981/113392172-a757e200-93cf-11eb-8728-dfff63888ef5.png)
+![week5-4](https://user-images.githubusercontent.com/67727981/113392154-a45cf180-93cf-11eb-9363-47fd05909238.png)
+![week5-5](https://user-images.githubusercontent.com/67727981/113392158-a4f58800-93cf-11eb-8b1a-40dbd5f97dbb.png)
+![week5-6](https://user-images.githubusercontent.com/67727981/113392159-a58e1e80-93cf-11eb-8fc7-5308ecffd7be.png)
+![week5-7](https://user-images.githubusercontent.com/67727981/113392162-a626b500-93cf-11eb-808a-34f1617de148.png)
